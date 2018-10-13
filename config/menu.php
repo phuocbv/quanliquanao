@@ -63,6 +63,29 @@ return [
             ]
         ],
         [
+            'title' => 'Supplier',
+            'link' => '/admin/suppliers',
+            'active' => 'admin/suppliers',
+            'icon' => 'icon-fa icon-fa-th-large',
+//            'children' => [
+//                [
+//                    'title' => 'Sidebar',
+//                    'link' => '/admin/layouts/sidebar',
+//                    'active' => 'admin/layouts/sidebar',
+//                ],
+//                [
+//                    'title' => 'Icon Sidebar',
+//                    'link' => '/admin/layouts/icon-sidebar',
+//                    'active' => 'admin/layouts/icon-sidebar',
+//                ],
+//                [
+//                    'title' => 'Horizontal Menu',
+//                    'link' => '/admin/layouts/horizontal-menu',
+//                    'active' => 'admin/layouts/horizontal-menu',
+//                ]
+//            ]
+        ],
+        [
             'title' => 'Basic UI',
             'link' => '#',
             'active' => 'admin/basic-ui*',

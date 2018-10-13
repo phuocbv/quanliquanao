@@ -77,7 +77,8 @@ return [
     |
     */
 
-    'locale' => 'en',
+//    'locale' => 'en',
+    'locale' => 'vi',
 
     /*
     |--------------------------------------------------------------------------
@@ -160,6 +161,7 @@ return [
         // Laraspace\Providers\BroadcastServiceProvider::class,
         Laraspace\Providers\EventServiceProvider::class,
         Laraspace\Providers\RouteServiceProvider::class,
+        Laraspace\Providers\RepositoryServiceProvider::class,
 
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Laracasts\Flash\FlashServiceProvider::class,

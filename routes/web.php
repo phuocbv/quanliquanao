@@ -23,6 +23,17 @@ Route::get('/', [
 
 Route::group([
     'prefix' => 'admin',
+    'namespace' => 'Admin',
+    'as' => 'admin.'
+], function () {
+    Route::get('/suppliers', [
+        'as' => 'suppliers',
+        'uses' => 'SuppliersController@index'
+    ]);
+});
+
+Route::group([
+    'prefix' => 'admin',
 //    'middleware' => 'admin'
 ], function () {
 
@@ -369,4 +380,9 @@ Route::get('logout', [
 
 Route::get('install', [
     'as' => 'logout', 'uses' => 'AuthController@logout'
+]);
+
+Route::get('getUser', [
+    'as' => 'getAllUser',
+    'uses' => 'UsersController@demo'
 ]);
