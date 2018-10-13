@@ -1,10 +1,18 @@
 <?php
 namespace Laraspace\Http\Controllers;
 
+use Laraspace\Repositories\Contracts\UserRepositoryInterface;
 use Laraspace\User;
 
 class UsersController extends Controller
 {
+    protected $userRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository)
+    {
+        $this->userRepository = $userRepository;
+    }
+
     public function index()
     {
         $users = User::where('role', 'user')->get();
@@ -26,5 +34,11 @@ class UsersController extends Controller
         flash()->success('User Deleted');
 
         return redirect()->back();
+    }
+
+    public function demo()
+    {
+        $user = $this->userRepository->getListUser();
+        return response()->json(\Auth::check());
     }
 }
