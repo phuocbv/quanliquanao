@@ -31,6 +31,7 @@
     <script src="{{mix('/assets/admin/js/core/plugins.js')}}"></script>
     <script src="{{asset('/assets/admin/js/demo/skintools.js')}}"></script>
     <script src="{{mix('/assets/admin/js/core/app.js')}}"></script>
+    <script src="{{ asset('/assets/admin/js/const.js') }}"></script>
     @yield('scripts')
 </body>
 </html>
