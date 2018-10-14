@@ -30,6 +30,18 @@ Route::group([
         'as' => 'suppliers',
         'uses' => 'SuppliersController@index'
     ]);
+    Route::post('/suppliers', [
+        'as' => 'suppliers.store',
+        'uses' => 'SuppliersController@store'
+    ]);
+    Route::get('/getSupplier', [
+        'as' => 'suppliers.getSupplier',
+        'uses' => 'SuppliersController@getSupplier'
+    ]);
+    Route::put('/updateSupplier', [
+        'as' => 'suppliers.updateSupplier',
+        'uses' => 'SuppliersController@updateSupplier'
+    ]);
 });
 
 Route::group([

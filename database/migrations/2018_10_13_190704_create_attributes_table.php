@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEspPricingsTable extends Migration
+class CreateAttributesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,9 @@ class CreateEspPricingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('esp_pricings', function (Blueprint $table) {
+        Schema::create('attributes', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('range');
-            $table->double('percent');
-            $table->double('freight');
-            $table->integer('product_id');
+            $table->string('name', 45);
             $table->timestamps();
         });
     }
@@ -30,6 +27,6 @@ class CreateEspPricingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('esp_pricings');
+        Schema::dropIfExists('attributes');
     }
 }

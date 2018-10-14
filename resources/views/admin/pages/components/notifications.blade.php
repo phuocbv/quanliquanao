@@ -23,7 +23,7 @@
                     <div class="card-body buttons-demo">
                         <div class="row">
                             <div class="col-sm-12">
-                                <button class="btn btn-success" data-toastr="success" data-message="Hello World"
+                                <button class="btn btn-success" data-toastr="success" data-message="Hello Worldssss"
                                         data-title="Success!">
                                     Success
                                 </button>

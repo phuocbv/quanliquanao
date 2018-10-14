@@ -17,7 +17,7 @@ class CreateSupplierPricingsTable extends Migration
             $table->increments('id');
             $table->integer('min');
             $table->integer('max');
-            $table->string('unit_price', 45);
+            $table->double('unit_price');
             $table->integer('product_id');
             $table->timestamps();
         });

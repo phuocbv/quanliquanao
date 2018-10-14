@@ -16,4 +16,13 @@ class Controller extends BaseController
     {
         return Auth::user();
     }
+
+    protected function response($status, $data = null, $messages = [])
+    {
+        return response()->json([
+            'status' => $status,
+            'data' => $data,
+            'message' => $messages
+        ]);
+    }
 }

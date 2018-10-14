@@ -16,8 +16,8 @@ class CreateEspPricingDefaultTable extends Migration
         Schema::create('esp_pricing_default', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('range');
-            $table->integer('percent');
-            $table->string('frieght', 45);
+            $table->double('percent');
+            $table->double('freight');
             $table->timestamps();
         });
     }
