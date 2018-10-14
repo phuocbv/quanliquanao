@@ -15,6 +15,22 @@ class RepositoryServiceProvider extends ServiceProvider
             \Laraspace\Repositories\Contracts\SupplierRepositoryInterface::class,
             \Laraspace\Repositories\SupplierRepositoryEloquent::class
         ],
+        'product' => [
+            \Laraspace\Repositories\Contracts\ProductRepositoryInterface::class,
+            \Laraspace\Repositories\ProductRepositoryEloquent::class
+        ],
+        'brand' => [
+            \Laraspace\Repositories\Contracts\BrandRepositoryInterface::class,
+            \Laraspace\Repositories\BrandRepositoryEloquent::class
+        ],
+        'color' => [
+            \Laraspace\Repositories\Contracts\ColorRepositoryInterface::class,
+            \Laraspace\Repositories\ColorRepositoryEloquent::class
+        ],
+        'size' => [
+            \Laraspace\Repositories\Contracts\SizeRepositoryInterface::class,
+            \Laraspace\Repositories\SizeRepositoryEloquent::class
+        ],
     ];
 
     /**

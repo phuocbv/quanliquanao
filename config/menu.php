@@ -86,6 +86,12 @@ return [
 //            ]
         ],
         [
+            'title' => 'Product',
+            'link' => '/admin/products',
+            'active' => 'admin/products',
+            'icon' => 'icon-fa icon-fa-th-large',
+        ],
+        [
             'title' => 'Basic UI',
             'link' => '#',
             'active' => 'admin/basic-ui*',

@@ -42,6 +42,10 @@ Route::group([
         'as' => 'suppliers.updateSupplier',
         'uses' => 'SuppliersController@updateSupplier'
     ]);
+    Route::get('/products', [
+        'as' => 'products',
+        'uses' => 'ProductsController@index'
+    ]);
 });
 
 Route::group([
