@@ -12,4 +12,6 @@ namespace Laraspace\Repositories\Contracts;
 interface ProductRepositoryInterface
 {
     public function getAll();
+
+    public function searchProduct($condition = []);
 }

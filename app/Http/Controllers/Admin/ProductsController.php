@@ -45,13 +45,55 @@ class ProductsController extends Controller
         $this->productRepository = $productRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
+        $input = $request->only('brand', 'category', 'gender', 'color', 'size');
+        $listProductIdCategory = collect([]);
+        $listProductIdColor = collect([]);
+        $listProductIdSize = collect([]);
+
+        //
+        if (isset($input['category']) && $input['category'] != 0) {
+            $category = $this->categoryRepository->find(trim($input['category']));
+            if ($category) {
+                $productCategories = $category->productCategories;
+                $listProductIdCategory->push($productCategories->pluck('product_id'));
+            }
+        }
+
+        //get list product id of color
+        if (isset($input['color'])) {
+            $arrColorId = explode(config('setting.delimiter'), $input['color']);
+            $arrColorId = trimElementInArray($arrColorId);
+            $colors = $this->colorRepository->findWhereIn('id', $arrColorId)->get();
+
+            $colors->each(function ($item) use ($listProductIdColor) {
+                $listProductIdColor->push($item->productColors->pluck('product_id'));
+            });
+        }
+
+        //get list product id of size
+        if (isset($input['size'])) {
+            $arrSizeId = explode(config('setting.delimiter'), $input['size']);
+            $arrSizeId = trimElementInArray($arrSizeId);
+            $sizes = $this->sizeRepository->findWhereIn('id', $arrSizeId)->get();
+
+            $sizes->each(function ($item) use ($listProductIdSize) {
+                $listProductIdSize->push($item->productSizes->pluck('product_id'));
+            });
+        }
+
         $brands = $this->brandRepository->all();
         $colors = $this->colorRepository->all();
         $sizes = $this->sizeRepository->all();
         $categories = $this->categoryRepository->all();
-        $products = $this->productRepository->getAll();
+
+        $products = $this->productRepository->searchProduct([
+            'listProductIdCategory' => $listProductIdCategory->collapse()->unique()->values()->all(),
+            'listProductIdColor' => $listProductIdColor->collapse()->unique()->values()->all(),
+            'listProductIdSize' => $listProductIdSize->collapse()->unique()->values()->all(),
+            'where' => $input
+        ])->get();
 
         return view('admin.products.index', [
             'brands' => $brands,
@@ -60,11 +102,6 @@ class ProductsController extends Controller
             'categories' => $categories,
             'products' => $products
         ]);
-    }
-
-    public function searchProduct(Request $request)
-    {
-        $input = $request->only('brand', 'category', 'gender', 'color', 'size');
     }
 
     public function store(Request $request)
