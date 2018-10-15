@@ -10,7 +10,9 @@ namespace Laraspace\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Laraspace\Http\Controllers\Controller;
 use Laraspace\Repositories\Contracts\BrandRepositoryInterface;
+use Laraspace\Repositories\Contracts\CategoryRepositoryInterface;
 use Laraspace\Repositories\Contracts\ColorRepositoryInterface;
+use Laraspace\Repositories\Contracts\ProductRepositoryInterface;
 use Laraspace\Repositories\Contracts\SizeRepositoryInterface;
 use Laraspace\Repositories\Contracts\SupplierRepositoryInterface;
 use Laraspace\Validator\SupplierValidator;
@@ -23,18 +25,24 @@ class ProductsController extends Controller
     protected $brandRepository;
     protected $colorRepository;
     protected $sizeRepository;
+    protected $categoryRepository;
+    protected $productRepository;
 
     public function __construct(
         SupplierRepositoryInterface $supplierRepository,
         BrandRepositoryInterface $brandRepository,
         ColorRepositoryInterface $colorRepository,
-        SizeRepositoryInterface $sizeRepository
+        SizeRepositoryInterface $sizeRepository,
+        CategoryRepositoryInterface $categoryRepository,
+        ProductRepositoryInterface $productRepository
     )
     {
         $this->supplierRepository = $supplierRepository;
         $this->brandRepository = $brandRepository;
         $this->colorRepository = $colorRepository;
         $this->sizeRepository = $sizeRepository;
+        $this->categoryRepository = $categoryRepository;
+        $this->productRepository = $productRepository;
     }
 
     public function index()
@@ -42,12 +50,21 @@ class ProductsController extends Controller
         $brands = $this->brandRepository->all();
         $colors = $this->colorRepository->all();
         $sizes = $this->sizeRepository->all();
+        $categories = $this->categoryRepository->all();
+        $products = $this->productRepository->getAll();
 
         return view('admin.products.index', [
             'brands' => $brands,
             'colors' => $colors,
-            'sizes' => $sizes
+            'sizes' => $sizes,
+            'categories' => $categories,
+            'products' => $products
         ]);
+    }
+
+    public function searchProduct(Request $request)
+    {
+        $input = $request->only('brand', 'category', 'gender', 'color', 'size');
     }
 
     public function store(Request $request)

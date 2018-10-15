@@ -31,6 +31,10 @@ class RepositoryServiceProvider extends ServiceProvider
             \Laraspace\Repositories\Contracts\SizeRepositoryInterface::class,
             \Laraspace\Repositories\SizeRepositoryEloquent::class
         ],
+        'category' => [
+            \Laraspace\Repositories\Contracts\CategoryRepositoryInterface::class,
+            \Laraspace\Repositories\CategoryRepositoryEloquent::class
+        ],
     ];
 
     /**

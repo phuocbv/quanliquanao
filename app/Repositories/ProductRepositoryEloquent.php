@@ -20,6 +20,6 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
     public function getAll()
     {
-        // TODO: Implement getAll() method.
+        return $this->all()->sortByDesc('id');
     }
 }
