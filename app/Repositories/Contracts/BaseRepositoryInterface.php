@@ -26,6 +26,8 @@ interface BaseRepositoryInterface
 
     public function findWhereIn($field, $array = [], $column = ['*']);
 
+    public function get($column = []);
+
     public function paginate($limit);
 
     public function create($inputs = []);

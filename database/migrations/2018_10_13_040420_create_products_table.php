@@ -25,6 +25,7 @@ class CreateProductsTable extends Migration
             $table->integer('discount')->nullable();
             $table->string('thumbnail')->nullable();
             $table->integer('supplier_id');
+            $table->integer('brand_id');
             $table->timestamps();
         });
     }

@@ -62,6 +62,11 @@ abstract class BaseRepository implements BaseRepositoryInterface
         return $this->model->whereIn($field, $array);
     }
 
+    public function get($column = [])
+    {
+        return $this->model->get($column);
+    }
+
     public function paginate($limit)
     {
         return $this->model->paginate($limit);
