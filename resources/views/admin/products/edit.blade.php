@@ -17,7 +17,7 @@
                     </div>
                     <div class="card-body">
                         @if ($product)
-                        <form class="row" action="{{ route('admin.products.updateProduct') }}" method="post">
+                        <form class="row" action="{{ route('admin.products.updateProduct') }}" method="post" id="formEditProduct">
                             <input type="hidden" name="_token" value="{{ csrf_token()  }}">
                             <input type="hidden" name="product_id" value="{{ $product->id  }}">
                             <div class="col-md-6">
@@ -99,7 +99,7 @@
                                         @foreach($sizes as $size)
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="checkbox" id="inlineCheckbox1"
-                                                       value="{{ $size->id }}" name="size[]" {{ checkBoxColor($product, $size->id) ? 'checked' : '' }}>
+                                                       value="{{ $size->id }}" name="size[]" {{ checkBoxSize($product, $size->id) ? 'checked' : '' }}>
                                                 <label class="form-check-label" for="inlineCheckbox1">{{ $size->size }}</label>
                                             </div>
                                         @endforeach
@@ -144,7 +144,7 @@
                                                 <td class="max">{{ $supplierPricing->max }}</td>
                                                 <td class="unit_price">{{ $supplierPricing->unit_price }}</td>
                                                 <td>
-                                                    <i class="icon-im icon-im-pencil" style="cursor: pointer"></i>
+                                                    {{--<i class="icon-im icon-im-pencil" style="cursor: pointer"></i>--}}
                                                     <i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i>
                                                 </td>
                                             </tr>
@@ -181,7 +181,7 @@
                                                 <td class="percent">{{ $espPricing->percent }}</td>
                                                 <td class="freight">{{ $espPricing->freight }}</td>
                                                 <td>
-                                                    <i class="icon-im icon-im-pencil" style="cursor: pointer"></i>
+                                                    {{--<i class="icon-im icon-im-pencil" style="cursor: pointer"></i>--}}
                                                     <i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i>
                                                 </td>
                                             </tr>
@@ -196,7 +196,7 @@
                                                 <td class="percent">{{ $espPricingDefault->percent }}</td>
                                                 <td class="freight">{{ $espPricingDefault->freight }}</td>
                                                 <td>
-                                                    <i class="icon-im icon-im-pencil" style="cursor: pointer"></i>
+                                                    {{--<i class="icon-im icon-im-pencil" style="cursor: pointer"></i>--}}
                                                     <i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i>
                                                 </td>
                                             </tr>
@@ -228,17 +228,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="min">Min</label>
-                        <input type="text" class="form-control" id="min" placeholder="Min">
+                        <input type="number" class="form-control" id="min" placeholder="Min">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="max">Max</label>
-                        <input type="text" name="name" class="form-control" id="max" placeholder="Max">
+                        <input type="number" name="name" class="form-control" id="max" placeholder="Max">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="unit_price">Unit Price</label>
-                        <input type="text" name="name" class="form-control" id="unit_price" placeholder="Unit Price">
+                        <input type="number" name="name" class="form-control" id="unit_price" placeholder="Unit Price">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>
@@ -263,17 +263,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="range">Range</label>
-                        <input type="text" class="form-control" id="range" placeholder="Range">
+                        <input type="number" class="form-control" id="range" placeholder="Range">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="percent">Percent(%)</label>
-                        <input type="text" class="form-control" id="percent" placeholder="Percent">
+                        <input type="number" class="form-control" id="percent" placeholder="Percent">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="freight">Freight</label>
-                        <input type="text" class="form-control" id="freight" placeholder="Freight">
+                        <input type="number" class="form-control" id="freight" placeholder="Freight">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>

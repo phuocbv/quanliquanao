@@ -1,11 +1,4 @@
 let Add = (function () {
-    let addSupplierModal = $('#addSupplierModal');
-    let editSupplierModal = $('#editSupplierModal');
-    let btnShowModalAddSupplier = $('#btnShowModalAddSupplier')
-    let btnAddSupplier = $('#btn-add-supplier');
-    let nameSupplier = $('#name');
-    let currentEdit;
-
     let addSupplierPricing = $('#addSupplierPricing');
     let addSupplierPricingModal = $('#addSupplierPricingModal');
     let btnAddSupplierPricing = $('#btn-add-supplier-pricing');
@@ -22,6 +15,13 @@ let Add = (function () {
 
     let handleAddSupplierPricing = function () {
         addSupplierPricing.on('click', function () {
+            addSupplierPricingModal.find('.invalid-feedback').each(function () {
+                $(this).empty();
+            });
+            addSupplierPricingModal.find('.form-control').each(function () {
+                $(this).removeClass('is-invalid');
+                $(this).val('');
+            });
             addSupplierPricingModal.modal('show');
             addSupplierPricingModal.find('.form-control').each(function () {
                 $(this).val(EMPTY_VALUE);
@@ -32,9 +32,39 @@ let Add = (function () {
             let min = addSupplierPricingModal.find('#min');
             let max = addSupplierPricingModal.find('#max');
             let unitPrice = addSupplierPricingModal.find('#unit_price');
+            min.removeClass('is-invalid');
+            min.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
+            max.removeClass('is-invalid');
+            max.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
+            unitPrice.removeClass('is-invalid');
+            unitPrice.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
+
+            //validate
+            let checkValidate = true;
+
+            if (min.val() === EMPTY_VALUE) {
+                min.addClass('is-invalid');
+                min.closest('.form-group').find('.invalid-feedback').html(REQUIRE_MESSAGE);
+                checkValidate = false;
+            }
+
+            if (max.val() === EMPTY_VALUE) {
+                max.addClass('is-invalid');
+                max.closest('.form-group').find('.invalid-feedback').html(REQUIRE_MESSAGE);
+                checkValidate = false;
+            }
+
+            if (unitPrice.val() === EMPTY_VALUE) {
+                unitPrice.addClass('is-invalid');
+                unitPrice.closest('.form-group').find('.invalid-feedback').html(REQUIRE_MESSAGE);
+                checkValidate = false;
+            }
+
+            if (!checkValidate) return;
 
             let html = '<tr><td class="min">' + min.val() + '</td><td class="max">' + max.val() + '</td><td class="unit_price">' + unitPrice.val() + '</td>' +
-                '<td><i class="icon-im icon-im-pencil" style="cursor: pointer"></i><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
+                // '<td><i class="icon-im icon-im-pencil" style="cursor: pointer"></i><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
+                '<td><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
             tableSupplierPricing.append(html);
 
             handleFillDataSupplierPricing();
@@ -62,6 +92,13 @@ let Add = (function () {
 
     let handleAddEspPricing = function () {
         addEspPricing.on('click', function () {
+            addEspPricingModal.find('.invalid-feedback').each(function () {
+                $(this).empty();
+            });
+            addEspPricingModal.find('.form-control').each(function () {
+                $(this).removeClass('is-invalid');
+                $(this).val('');
+            });
             addEspPricingModal.modal('show');
             addEspPricingModal.find('.form-control').each(function () {
                 $(this).val(EMPTY_VALUE);
@@ -73,8 +110,39 @@ let Add = (function () {
             let percent = addEspPricingModal.find('#percent');
             let freight = addEspPricingModal.find('#freight');
 
+            range.removeClass('is-invalid');
+            range.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
+            percent.removeClass('is-invalid');
+            percent.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
+            freight.removeClass('is-invalid');
+            freight.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
+
+            //validate
+            let checkValidate = true;
+
+            if (range.val() === EMPTY_VALUE) {
+                range.addClass('is-invalid');
+                range.closest('.form-group').find('.invalid-feedback').html(REQUIRE_MESSAGE);
+                checkValidate = false;
+            }
+
+            if (percent.val() === EMPTY_VALUE) {
+                percent.addClass('is-invalid');
+                percent.closest('.form-group').find('.invalid-feedback').html(REQUIRE_MESSAGE);
+                checkValidate = false;
+            }
+
+            if (freight.val() === EMPTY_VALUE) {
+                freight.addClass('is-invalid');
+                freight.closest('.form-group').find('.invalid-feedback').html(REQUIRE_MESSAGE);
+                checkValidate = false;
+            }
+
+            if (!checkValidate) return;
+
             let html = '<tr><td class="range">' + range.val() + '</td><td class="percent">' + percent.val() + '</td><td class="freight">' + freight.val() + '</td>' +
-                '<td><i class="icon-im icon-im-pencil" style="cursor: pointer"></i><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
+                // '<td><i class="icon-im icon-im-pencil" style="cursor: pointer"></i><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
+                '<td><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
             tableEspPricing.append(html);
 
             handleFillDataEspPricing();
@@ -111,11 +179,63 @@ let Add = (function () {
                 let html = '';
                 data.data.forEach(function (element) {
                     html += '<tr><td class="range">' + element.range + '</td><td class="percent">' + element.percent + '</td><td class="freight">' + element.freight + '</td>' +
-                        '<td><i class="icon-im icon-im-pencil" style="cursor: pointer"></i><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
+                        // '<td><i class="icon-im icon-im-pencil" style="cursor: pointer"></i><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
+                        '<td><i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i></td></tr>';
                 });
                 tableEspPricing.html(html);
             });
         });
+    };
+
+    let handleValidate = function () {
+        let form = $('#formAddProduct')
+        form.validate({
+            errorElement: 'span', // default input error message container
+            errorClass: 'help-block help-block-error', // default input error message class
+            focusInvalid: false, // do not focus the last invalid input
+            ignore: '',  // validate all fields including form hidden input
+            rules: {
+                product_name: {
+                    required: true
+                },
+                product_code: {
+                    required: true,
+                },
+                supplier: {
+                    required: true
+                },
+                brand: {
+                    required: true
+                },
+                category: {
+                    required: true,
+                },
+                gender: {
+                    required: true
+                }
+            },
+
+            highlight: function (element) { // hightlight error inputs
+                $(element)
+                    .closest('.form-group .form-control').addClass('is-invalid') // set invalid class to the control group
+            },
+            unhighlight: function (element) { // revert the change done by hightlight
+                $(element)
+                    .closest('.form-group .form-control').removeClass('is-invalid') // set invalid class to the control group
+                    .closest('.form-group .form-control').addClass('is-valid')
+            },
+            errorPlacement: function (error, element) {
+                if (element.parent('.input-group').length || element.prop('type') === 'checkbox' || element.prop('type') === 'radio') {
+                    error.insertAfter(element.parent())
+                } else {
+                    error.insertAfter(element)
+                }
+            },
+            success: function (label) {
+                label
+                    .closest('.form-group .form-control').removeClass('is-invalid') // set success class to the control group
+            }
+        })
     };
 
 
@@ -136,145 +256,17 @@ let Add = (function () {
         }
     };
 
-    let handleShowAddModal = function () {
-        btnShowModalAddSupplier.on('click', function () {
-            addSupplierModal.find('.invalid-feedback').each(function () {
-                $(this).empty();
-            });
-            addSupplierModal.find('.form-control').each(function () {
-                $(this).removeClass('is-invalid');
-                $(this).val('');
-            });
-            addSupplierModal.modal('show');
-        });
-    };
-
-    let handleSubmitAddSupplier = function () {
-        btnAddSupplier.on('click', function () {
-            let name = nameSupplier.val();
-            nameSupplier.removeClass('is-invalid');
-            nameSupplier.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
-
-            if (name === EMPTY_VALUE) {
-                nameSupplier.addClass('is-invalid');
-                nameSupplier.closest('.form-group').find('.invalid-feedback').html(SUPPLIER_NAME_EMPTY_MESSAGE);
-                return;
-            }
-            if (name.length > SUPPLIER_NAME_LENGTH) {
-                nameSupplier.addClass('is-invalid');
-                nameSupplier.closest('.form-group').find('.invalid-feedback').html(SUPPLIER_NAME_LENGTH_MESSAGE);
-                return;
-            }
-
-            let data = {
-                name: name
-            };
-            ajaxSetup();
-            let ajax = $.ajax({
-                type: 'POST',
-                url: urlAddSupplier,
-                data: data
-            });
-            ajax.done(function (data) {
-                if (data.status) {
-                    datatable.row.add([
-                        data.data.id,
-                        data.data.name,
-                        '<i class="icon-im icon-im-pencil" style="cursor: pointer" data-id="' + data.data.id + '"></i>'
-                    ]).draw();
-                    addSupplierModal.modal('hide');
-                    toastr['success']('Supplier Add', 'Success');
-                } else {
-                    let messages = '';
-                    data.message.forEach(function (value) {
-                        messages += value;
-                    });
-                    toastr['error'](messages, 'Error');
-                }
-            });
-        });
-    };
-
-    let handleShowEditModal = function () {
-        $('#responsive-datatable').on('click', '.icon-im.icon-im-pencil', function () {
-            currentEdit = $(this);
-            let ajax = $.ajax({
-                type: 'GET',
-                url: urlEditSupplier,
-                data: {
-                    id: $(this).data('id')
-                }
-            });
-            ajaxSetup();
-            ajax.done(function (data) {
-                if (data.status) {
-                    editSupplierModal.html(data.data);
-                    editSupplierModal.modal('show');
-                }
-            });
-        });
-    };
-
-    let handleSubmitEditSupplier = function () {
-        editSupplierModal.on('click', '#btn-edit-supplier', function () {
-            let id = $(this).data('id');
-            let nameSupplier = editSupplierModal.find('#name');
-            nameSupplier.removeClass('is-invalid');
-            nameSupplier.closest('.form-group').find('.invalid-feedback').html(EMPTY_VALUE);
-
-            if (nameSupplier.val() === EMPTY_VALUE) {
-                nameSupplier.addClass('is-invalid');
-                nameSupplier.closest('.form-group').find('.invalid-feedback').html(SUPPLIER_NAME_EMPTY_MESSAGE);
-                return;
-            }
-            if (nameSupplier.val().length > SUPPLIER_NAME_LENGTH) {
-                nameSupplier.addClass('is-invalid');
-                nameSupplier.closest('.form-group').find('.invalid-feedback').html(SUPPLIER_NAME_LENGTH_MESSAGE);
-                return;
-            }
-
-            let data = {
-                id: id,
-                name: nameSupplier.val()
-            };
-            let ajax = $.ajax({
-                type: 'PUT',
-                url: urlUpdateSupplier,
-                data: data
-            });
-            ajaxSetup();
-            ajax.done(function (data) {
-                if (data.status) {
-                    let tr = currentEdit.closest('tr');
-                    $(tr.find('td')[1]).html(nameSupplier.val());
-                    editSupplierModal.modal('hide');
-                    toastr['success']('Supplier Edit', 'Success');
-                } else {
-                    let messages = '';
-                    data.message.forEach(function (value) {
-                        messages += value;
-                    });
-                    toastr['error'](messages, 'Error');
-                }
-            });
-        });
-    };
-
     return {
         // main function to initiate the module
         init: function () {
             handleToastrNotifs();
-            handleShowAddModal();
-            handleSubmitAddSupplier();
-            handleShowEditModal();
-            handleSubmitEditSupplier();
-
             handleAddSupplierPricing();
             handleDeleteSupplierPricing();
 
             handleAddEspPricing();
             handleDeleteEspPricing();
             loadAgainEspPricing();
+            handleValidate();
         }
     }
 })();

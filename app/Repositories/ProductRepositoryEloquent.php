@@ -95,39 +95,43 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             }
 
             //process size
-            $arrSize = $input['size'];
-            $dataSize = [];
+            if (isset($input['size'])) {
+                $arrSize = $input['size'];
+                $dataSize = [];
 
-            foreach ($arrSize as $value) {
-                $dataSize[] = [
-                    'product_id' => $product->id,
-                    'size_id' => $value
-                ];
-            }
+                foreach ($arrSize as $value) {
+                    $dataSize[] = [
+                        'product_id' => $product->id,
+                        'size_id' => $value
+                    ];
+                }
 
-            $result = ProductSize::insert($dataSize);
+                $result = ProductSize::insert($dataSize);
 
-            if (!$result) {
-                DB::rollBack();
-                return false;
+                if (!$result) {
+                    DB::rollBack();
+                    return false;
+                }
             }
 
             //process color
-            $arrColor = $input['color'];
-            $dataColor = [];
+            if (isset($input['color'])) {
+                $arrColor = $input['color'];
+                $dataColor = [];
 
-            foreach ($arrColor as $value) {
-                $dataColor[] = [
-                    'product_id' => $product->id,
-                    'color_id' => $value
-                ];
-            }
+                foreach ($arrColor as $value) {
+                    $dataColor[] = [
+                        'product_id' => $product->id,
+                        'color_id' => $value
+                    ];
+                }
 
-            $result = ProductColor::insert($dataColor);
+                $result = ProductColor::insert($dataColor);
 
-            if (!$result) {
-                DB::rollBack();
-                return false;
+                if (!$result) {
+                    DB::rollBack();
+                    return false;
+                }
             }
 
             //process esp_pricing
@@ -220,42 +224,45 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
             //process size
             $product->productSizes()->delete();
+            if (isset($input['size'])) {
+                $arrSize = $input['size'];
+                $dataSize = [];
 
-            $arrSize = $input['size'];
-            $dataSize = [];
+                foreach ($arrSize as $value) {
+                    $dataSize[] = [
+                        'product_id' => $product->id,
+                        'size_id' => $value
+                    ];
+                }
 
-            foreach ($arrSize as $value) {
-                $dataSize[] = [
-                    'product_id' => $product->id,
-                    'size_id' => $value
-                ];
+                $result = ProductSize::insert($dataSize);
+
+                if (!$result) {
+                    DB::rollBack();
+                    return false;
+                }
             }
 
-            $result = ProductSize::insert($dataSize);
-
-            if (!$result) {
-                DB::rollBack();
-                return false;
-            }
 
             //process color
             $product->productColors()->delete();
+            if (isset($input['color'])) {
+                $arrColor = $input['color'];
+                $dataColor = [];
 
-            $arrColor = $input['color'];
-            $dataColor = [];
+                foreach ($arrColor as $value) {
+                    $dataColor[] = [
+                        'product_id' => $product->id,
+                        'color_id' => $value
+                    ];
+                }
 
-            foreach ($arrColor as $value) {
-                $dataColor[] = [
-                    'product_id' => $product->id,
-                    'color_id' => $value
-                ];
-            }
+                $result = ProductColor::insert($dataColor);
 
-            $result = ProductColor::insert($dataColor);
-
-            if (!$result) {
-                DB::rollBack();
-                return false;
+                if (!$result) {
+                    DB::rollBack();
+                    return false;
+                }
             }
 
             //process esp_pricing
