@@ -57,7 +57,7 @@ class ProductsController extends Controller
         $listProductIdSize = collect([]);
 
         //
-        if (isset($input['category']) && $input['category'] != 0) {
+        if (isset($input['category'])) {
             $category = $this->categoryRepository->find(trim($input['category']));
             if ($category) {
                 $productCategories = $category->productCategories;
@@ -66,9 +66,9 @@ class ProductsController extends Controller
         }
 
         //get list product id of color
-        if (isset($input['color'])) {
-            $arrColorId = explode(config('setting.delimiter'), $input['color']);
-            $arrColorId = trimElementInArray($arrColorId);
+        if (isset($input['color']) && $input['color'] != '') {
+            $arrColorId = json_decode($input['color']);
+            $input['arrColor'] = $arrColorId;
             $colors = $this->colorRepository->findWhereIn('id', $arrColorId)->get();
 
             $colors->each(function ($item) use ($listProductIdColor) {
@@ -77,9 +77,9 @@ class ProductsController extends Controller
         }
 
         //get list product id of size
-        if (isset($input['size'])) {
-            $arrSizeId = explode(config('setting.delimiter'), $input['size']);
-            $arrSizeId = trimElementInArray($arrSizeId);
+        if (isset($input['size']) &&$input['size'] != '') {
+            $arrSizeId = json_decode($input['size']);
+            $input['arrSize'] = $arrSizeId;
             $sizes = $this->sizeRepository->findWhereIn('id', $arrSizeId)->get();
 
             $sizes->each(function ($item) use ($listProductIdSize) {
@@ -104,7 +104,8 @@ class ProductsController extends Controller
             'colors' => $colors,
             'sizes' => $sizes,
             'categories' => $categories,
-            'products' => $products
+            'products' => $products,
+            'input' => $input
         ]);
     }
 

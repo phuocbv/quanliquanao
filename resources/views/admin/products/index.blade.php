@@ -23,7 +23,9 @@
                                     <select class="form-control" id="brand" name="brand">
                                         <option value="">All</option>
                                         @foreach($brands as $brand)
-                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                            <option value="{{ $brand->id }}" {{ (isset($input['brand']) && $brand->id == $input['brand']) ? 'selected' : '' }}>
+                                                {{ $brand->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -32,7 +34,9 @@
                                     <select class="form-control" id="category" name="category">
                                         <option value="">All</option>
                                         @foreach($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}" {{ (isset($input['category']) && $input['category'] == $category->id) ? 'selected' : '' }}>
+                                                {{ $category->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -40,8 +44,8 @@
                                     <label for="gender">Gender</label>
                                     <select class="form-control" id="gender" name="gender">
                                         <option value="">All</option>
-                                        <option value="0">Male</option>
-                                        <option value="1">Female</option>
+                                        <option value="{{ config('setting.gender.male') }}" {{ isset($input['gender']) && $input['gender'] == config('setting.gender.male') ? 'selected' : '' }}>Male</option>
+                                        <option value="{{ config('setting.gender.female') }}" {{ isset($input['gender']) && $input['gender'] == config('setting.gender.female') ? 'selected' : '' }}>Female</option>
                                     </select>
                                 </div>
                             </div>
@@ -50,21 +54,23 @@
                                     <h5>{{ trans('product_index.filter_product.colors') }}</h5>
                                     @foreach($colors as $color)
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="{{ $color->id }}" name="color"
+                                            <input class="form-check-input checkbox-color" type="checkbox" id="color{{ $color->id }}"
                                                    value="{{ $color->id }}">
-                                            <label class="form-check-label" for="{{ $color->id }}">{{ $color->name }}</label>
+                                            <label class="form-check-label" for="color{{ $color->id }}">{{ $color->name }}</label>
                                         </div>
                                     @endforeach
+                                    <input type="hidden" id="hiddenCheckBoxColor" name="color">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <h5>{{ trans('product_index.filter_product.sizes') }}</h5>
                                     @foreach($sizes as $size)
                                         <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" id="{{ $size->id }}" name="size"
-                                                   value="option1">
-                                            <label class="form-check-label" for="{{ $size->id }}">{{ $size->size }}</label>
+                                            <input class="form-check-input checkbox-size" type="checkbox" id="size{{ $size->id }}"
+                                                   value="{{ $size->id }}" {{ isset($input['arrSize']) && in_array($size->id, $input['arrSize']) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="size{{ $size->id }}">{{ $size->size }}</label>
                                         </div>
                                     @endforeach
+                                    <input type="hidden" id="hiddenCheckBoxSize" name="size" value="{{ isset($input['arrSize']) ? json_encode($input['arrSize']) : ''}}">
                                 </div>
                             </div>
                             <button class="btn btn-primary">Search</button>
@@ -129,4 +135,9 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('scripts')
+
+    <script src="{{asset('/assets/admin/js/products/index.js')}}"></script>
 @endsection
