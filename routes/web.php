@@ -46,6 +46,26 @@ Route::group([
         'as' => 'products',
         'uses' => 'ProductsController@index'
     ]);
+    Route::get('/products/add', [
+        'as' => 'products.add',
+        'uses' => 'ProductsController@create'
+    ]);
+    Route::post('/products', [
+        'as' => 'products.store',
+        'uses' => 'ProductsController@store'
+    ]);
+    Route::get('/products/{id}/edit', [
+        'as' => 'products.edit',
+        'uses' => 'ProductsController@edit'
+    ]);
+    Route::post('/updateProduct', [
+        'as' => 'products.updateProduct',
+        'uses' => 'ProductsController@update'
+    ]);
+    Route::get('/espPricing', [
+        'as' => 'espPricing',
+        'uses' => 'EspPricingsController@getEspDefault'
+    ]);
 });
 
 Route::group([

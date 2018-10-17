@@ -29,3 +29,30 @@ function trimElementInArray($array = []) {
     }
     return $result;
 }
+
+function checkBoxColor($product, $colorId) {
+    if ($product) {
+        $colors = $product->colors;
+        foreach ($colors as $color) {
+            if ($color->id == $colorId) return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * has checkBox size
+ *
+ * @param $product
+ * @param $sizeId
+ * @return bool
+ */
+function checkBoxSize($product, $sizeId) {
+    if ($product) {
+        $sizes = $product->sizes;
+        foreach ($sizes as $size) {
+            if ($size->id == $sizeId) return true;
+        }
+    }
+    return false;
+}

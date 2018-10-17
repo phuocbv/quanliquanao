@@ -14,4 +14,8 @@ interface ProductRepositoryInterface
     public function getAll();
 
     public function searchProduct($condition = []);
+
+    public function saveProduct($input = []);
+
+    public function updateProduct($input = [], $id);
 }

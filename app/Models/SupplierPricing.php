@@ -11,7 +11,8 @@ class SupplierPricing extends Model
     protected $fillable = [
         'min',
         'max',
-        'unit_price'
+        'unit_price',
+        'product_id'
     ];
 
     public function product()

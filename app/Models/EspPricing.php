@@ -10,7 +10,8 @@ class EspPricing extends Model
     protected $fillable = [
         'range',
         'percent',
-        'freight'
+        'freight',
+        'product_id'
     ];
 
     public function product()

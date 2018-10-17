@@ -9,7 +9,13 @@ class Product extends Model
 
     protected $fillable = [
         'code',
-        'name'
+        'name',
+        'weight',
+        'gender',
+        'description',
+        'thumbnail',
+        'supplier_id',
+        'brand_id'
     ];
 
     public function supplier()
@@ -42,10 +48,28 @@ class Product extends Model
         return $this->belongsToMany(Image::class, 'product_images', 'product_id', 'image_id');
     }
 
-    public function espPricing()
+    public function espPricings()
     {
         return $this->hasMany(EspPricing::class, 'product_id');
     }
 
-   // public function
+    public function supplierPricings()
+    {
+        return $this->hasMany(SupplierPricing::class, 'product_id');
+    }
+
+    public function productSizes()
+    {
+        return $this->hasMany(ProductSize::class, 'product_id');
+    }
+
+    public function productColors()
+    {
+        return $this->hasMany(ProductColor::class, 'product_id');
+    }
+
+    public function productCategories()
+    {
+        return $this->hasMany(ProductCategory::class, 'product_id');
+    }
 }

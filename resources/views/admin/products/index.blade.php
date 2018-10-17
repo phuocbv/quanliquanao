@@ -21,6 +21,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="brand">{{ trans('product_index.filter_product.brand') }}</label>
                                     <select class="form-control" id="brand" name="brand">
+                                        <option value="">All</option>
                                         @foreach($brands as $brand)
                                             <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                         @endforeach
@@ -29,6 +30,7 @@
                                 <div class="form-group col-md-4">
                                     <label for="category">{{ trans('product_index.filter_product.product_category') }}</label>
                                     <select class="form-control" id="category" name="category">
+                                        <option value="">All</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
@@ -81,9 +83,9 @@
                                 <h6>Danh sách sản phẩm</h6>
                             </div>
                             <div class="col-sm-6" align="right" style="padding-right: 50px">
-                                <button class="btn btn-info" id="btnShowModalAddSupplier">
+                                <a href="{{ route('admin.products.add') }}" class="btn btn-primary">
                                     {{ trans('supplier_index.button_add') }}
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -99,7 +101,7 @@
                                 <th>Colors</th>
                                 <th>Gender</th>
                                 <th>Sizes</th>
-                                <th>Edit</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody id="view-data">
@@ -111,9 +113,13 @@
                                         <td>{{ $product->name }}</td>
                                         <td>{{ $product->weight }}</td>
                                         <td>{{ convertArrayObjectToString($product->colors) }}</td>
-                                        <td>{{ $product->gender }}</td>
+                                        <td>{{ trans('product_index.gender')[$product->gender] }}</td>
                                         <td>{{ convertArrayObjectToString($product->sizes, 'size') }}</td>
-                                        <td></td>
+                                        <td>
+                                            <a href="{{ route('admin.products.edit', ['id' => $product->id]) }}">
+                                                <i class="icon-im icon-im-pencil"></i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>

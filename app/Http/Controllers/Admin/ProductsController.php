@@ -12,6 +12,7 @@ use Laraspace\Http\Controllers\Controller;
 use Laraspace\Repositories\Contracts\BrandRepositoryInterface;
 use Laraspace\Repositories\Contracts\CategoryRepositoryInterface;
 use Laraspace\Repositories\Contracts\ColorRepositoryInterface;
+use Laraspace\Repositories\Contracts\EspPricingDefaultRepositoryInterface;
 use Laraspace\Repositories\Contracts\ProductRepositoryInterface;
 use Laraspace\Repositories\Contracts\SizeRepositoryInterface;
 use Laraspace\Repositories\Contracts\SupplierRepositoryInterface;
@@ -27,6 +28,7 @@ class ProductsController extends Controller
     protected $sizeRepository;
     protected $categoryRepository;
     protected $productRepository;
+    protected $espPricingDefaultRepository;
 
     public function __construct(
         SupplierRepositoryInterface $supplierRepository,
@@ -34,7 +36,8 @@ class ProductsController extends Controller
         ColorRepositoryInterface $colorRepository,
         SizeRepositoryInterface $sizeRepository,
         CategoryRepositoryInterface $categoryRepository,
-        ProductRepositoryInterface $productRepository
+        ProductRepositoryInterface $productRepository,
+        EspPricingDefaultRepositoryInterface $espPricingDefaultRepository
     )
     {
         $this->supplierRepository = $supplierRepository;
@@ -43,6 +46,7 @@ class ProductsController extends Controller
         $this->sizeRepository = $sizeRepository;
         $this->categoryRepository = $categoryRepository;
         $this->productRepository = $productRepository;
+        $this->espPricingDefaultRepository = $espPricingDefaultRepository;
     }
 
     public function index(Request $request)
@@ -104,49 +108,83 @@ class ProductsController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        $espPricingDefaults = $this->espPricingDefaultRepository->get(['range', 'percent', 'freight']);
+        $sizes = $this->sizeRepository->all();
+        $colors = $this->colorRepository->all();
+        $brands = $this->brandRepository->all();
+        $categories = $this->categoryRepository->all();
+        $suppliers = $this->supplierRepository->all();
+
+        return view('admin.products.add', [
+            'espPricingDefaults' => $espPricingDefaults,
+            'sizes' => $sizes,
+            'colors' => $colors,
+            'brands' => $brands,
+            'categories' => $categories,
+            'suppliers' => $suppliers
+        ]);
+    }
+
     public function store(Request $request)
     {
-        $input = $request->only('name');
+        $input = $request->only('product_name', 'product_code', 'supplier', 'brand', 'category', 'gender', 'weight', 'description', 'size', 'color', 'supplier_pricing', 'esp_pricing');
+        //dd($input);
+
         try {
-            $this->supplierValidator->with($input)->passesOrFail( ValidatorInterface::RULE_CREATE);
-            $supplier = $this->supplierRepository->create($input);
-            return $this->response(true, $supplier);
+            //validate
+
+            //process create product
+            $this->productRepository->saveProduct($input);
+            return redirect()->route('admin.products');
         } catch (ValidatorException $e) {
-            return $this->response(false, null, $e->getMessageBag()->all());
+            return $e->getMessageBag();
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 
-    public function getSupplier(Request $request)
+    public function edit($id)
     {
-        $input = $request->only('id');
-        $supplier = $this->supplierRepository->find($input['id']);
+        $espPricingDefaults = $this->espPricingDefaultRepository->get(['range', 'percent', 'freight']);
+        $sizes = $this->sizeRepository->all();
+        $colors = $this->colorRepository->all();
+        $brands = $this->brandRepository->all();
+        $categories = $this->categoryRepository->all();
+        $suppliers = $this->supplierRepository->all();
 
-        if (!$supplier) {
-            return $this->response(false, null, [trans('supplier_index.not_found_supplier')]);
-        }
+        $product = $this->productRepository->find($id);
 
-        $view = view('admin.item.suppliers.edit', [
-            'supplier' => $supplier
-        ])->render();
-        return $this->response(true, $view);
+        return view('admin.products.edit', [
+            'espPricingDefaults' => $espPricingDefaults,
+            'sizes' => $sizes,
+            'colors' => $colors,
+            'brands' => $brands,
+            'categories' => $categories,
+            'suppliers' => $suppliers,
+            'product' => $product
+        ]);
     }
 
     /**
-     * update supplier
+     * update product
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function updateSupplier(Request $request)
+    public function update(Request $request)
     {
-        $input = $request->only('id', 'name');
+        $input = $request->only('product_id', 'product_name', 'product_code', 'supplier', 'brand', 'category', 'gender', 'weight', 'description', 'size', 'color', 'supplier_pricing', 'esp_pricing');
         try {
-            $this->supplierValidator->setId($input['id'])
-                ->with($input)->passesOrFail( ValidatorInterface::RULE_UPDATE);
-            $supplier = $this->supplierRepository->update($input, $input['id']);
-            return $this->response(true, $supplier);
+            //validate
+
+            $this->productRepository->updateProduct($input, $input['product_id']);
+            return redirect()->route('admin.products.edit', ['id' => $input['product_id']]);
         } catch (ValidatorException $e) {
-            return $this->response(false, null, $e->getMessageBag()->all());
+            return $e->getMessageBag();
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
     }
 }
