@@ -7,7 +7,7 @@ const SUPPLIER_NAME_LENGTH = 255;
 const SUPPLIER_NAME_EMPTY_MESSAGE = 'Không nhập tên';
 const SUPPLIER_NAME_LENGTH_MESSAGE = 'Nhập quá 255';
 
-
+const REQUIRE_MESSAGE = 'This field is required.';
 
 let ajaxSetup = function () {
     $.ajaxSetup({

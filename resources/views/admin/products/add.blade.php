@@ -16,25 +16,25 @@
                         <h6>{{ trans('product_index.filter_product.title') }}</h6>
                     </div>
                     <div class="card-body">
-                        <form class="row" action="{{ route('admin.products.store') }}" method="post">
+                        <form class="row" action="{{ route('admin.products.store') }}" method="post" id="formAddProduct">
                             <input type="hidden" name="_token" value="{{ csrf_token()  }}">
                             <div class="col-md-6">
                                 <h5 class="section-semi-title">BOCINI V-Neck Sports Shirt</h5>
                                 <div class="form-group">
                                     <label for="productName">Product Name</label>
-                                    <input type="type" class="form-control" id="productName" name="product_name" placeholder="Product Name">
+                                    <input type="type" class="form-control" id="productName" name="product_name" placeholder="Product Name" value="">
                                     {{--<small id="emailHelp" class="form-text text-muted">We'll never share your email with--}}
                                         {{--anyone else.--}}
                                     {{--</small>--}}
                                 </div>
                                 <div class="form-group">
                                     <label for="productCode">Product Code</label>
-                                    <input type="type" class="form-control" id="productCode" name="product_code" placeholder="Product code">
+                                    <input type="type" class="form-control" id="productCode" name="product_code" placeholder="Product code" value="">
                                 </div>
                                 <div class="form-group">
                                     <label for="supplier">Supplier</label>
                                     <select class="form-control col-md-12" id="supplier" name="supplier">
-                                        <option value="0">------Select Supplier------</option>
+                                        <option value="">------Select Supplier------</option>
                                         @foreach($suppliers as $supplier)
                                             <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                         @endforeach
@@ -44,7 +44,7 @@
                                     <div class="col-sm-6">
                                         <label for="brand">Brand</label>
                                         <select class="form-control col-md-12" id="brand" name="brand">
-                                            <option value="0">-----Select Brand-----</option>
+                                            <option value="">-----Select Brand-----</option>
                                             @foreach($brands as $brand)
                                                 <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                             @endforeach
@@ -53,7 +53,7 @@
                                     <div class="col-sm-6">
                                         <label for="category">Category</label>
                                         <select class="form-control col-md-12" id="category" name="category">
-                                            <option value="0">------Select Category------</option>
+                                            <option value="">------Select Category------</option>
                                             @foreach($categories as $category)
                                                 <option value="{{ $category->id }}">{{ $category->name }}</option>
                                             @endforeach
@@ -68,10 +68,10 @@
                                             <input class="form-check-input" type="radio" name="gender" value="{{ config('setting.gender.male') }}"
                                                    id="checkMale" >
                                             <label class="form-check-label" for="checkMale">Male</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
+                                        {{--</div>--}}
+                                        {{--<div class="form-check form-check-inline">--}}
                                             <input class="form-check-input" type="radio" name="gender" value="{{ config('setting.gender.female') }}"
-                                                   id="checkFemale" >
+                                                   id="checkFemale" style="margin-left: 20px">
                                             <label class="form-check-label" for="checkFemale">Female</label>
                                         </div>
                                     </div>
@@ -116,7 +116,7 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                <button class="btn btn-primary">Submit</button>
+                                <button class="btn btn-primary">Add Product</button>
                             </div>
                             <div class="col-sm-6">
                                 <div style="position: relative">
@@ -164,7 +164,7 @@
                                             <td class="percent">{{ $espPricingDefault->percent }}</td>
                                             <td class="freight">{{ $espPricingDefault->freight }}</td>
                                             <td>
-                                                <i class="icon-im icon-im-pencil" style="cursor: pointer"></i>
+                                                {{--<i class="icon-im icon-im-pencil" style="cursor: pointer"></i>--}}
                                                 <i class="icon-im icon-im-bin" style="cursor: pointer; margin-left: 10px"></i>
                                             </td>
                                         </tr>
@@ -194,17 +194,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="min">Min</label>
-                        <input type="text" class="form-control" id="min" placeholder="Min">
+                        <input type="number" class="form-control" id="min" placeholder="Min">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="max">Max</label>
-                        <input type="text" name="name" class="form-control" id="max" placeholder="Max">
+                        <input type="number" name="name" class="form-control" id="max" placeholder="Max">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="unit_price">Unit Price</label>
-                        <input type="text" name="name" class="form-control" id="unit_price" placeholder="Unit Price">
+                        <input type="number" name="name" class="form-control" id="unit_price" placeholder="Unit Price">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>
@@ -229,17 +229,17 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="range">Range</label>
-                        <input type="text" class="form-control" id="range" placeholder="Range">
+                        <input type="number" class="form-control" id="range" placeholder="Range">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="percent">Percent(%)</label>
-                        <input type="text" class="form-control" id="percent" placeholder="Percent">
+                        <input type="number" class="form-control" id="percent" placeholder="Percent">
                         <div class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="freight">Freight</label>
-                        <input type="text" class="form-control" id="freight" placeholder="Freight">
+                        <input type="number" class="form-control" id="freight" placeholder="Freight">
                         <div class="invalid-feedback"></div>
                     </div>
                 </div>

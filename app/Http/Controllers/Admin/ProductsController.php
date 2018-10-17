@@ -130,7 +130,6 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $input = $request->only('product_name', 'product_code', 'supplier', 'brand', 'category', 'gender', 'weight', 'description', 'size', 'color', 'supplier_pricing', 'esp_pricing');
-        //dd($input);
 
         try {
             //validate
