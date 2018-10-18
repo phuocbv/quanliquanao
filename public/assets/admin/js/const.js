@@ -1,5 +1,7 @@
 const EMPTY_VALUE = '';
 
+const DELIMITER = ',';
+
 //check length
 const SUPPLIER_NAME_LENGTH = 255;
 

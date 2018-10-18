@@ -55,22 +55,22 @@
                                     @foreach($colors as $color)
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input checkbox-color" type="checkbox" id="color{{ $color->id }}"
-                                                   value="{{ $color->id }}">
+                                                   value="{{ $color->id }}" {{ in_array($color->id, $input['arrColor']) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="color{{ $color->id }}">{{ $color->name }}</label>
                                         </div>
                                     @endforeach
-                                    <input type="hidden" id="hiddenCheckBoxColor" name="color">
+                                    <input type="hidden" id="hiddenCheckBoxColor" name="color" value="{{ implode(config('setting.delimiter'), $input['arrColor']) }}">
                                 </div>
                                 <div class="form-group col-md-6">
                                     <h5>{{ trans('product_index.filter_product.sizes') }}</h5>
                                     @foreach($sizes as $size)
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input checkbox-size" type="checkbox" id="size{{ $size->id }}"
-                                                   value="{{ $size->id }}" {{ isset($input['arrSize']) && in_array($size->id, $input['arrSize']) ? 'checked' : '' }}>
+                                                   value="{{ $size->id }}" {{ in_array($size->id, $input['arrSize']) ? 'checked' : '' }}>
                                             <label class="form-check-label" for="size{{ $size->id }}">{{ $size->size }}</label>
                                         </div>
                                     @endforeach
-                                    <input type="hidden" id="hiddenCheckBoxSize" name="size" value="{{ isset($input['arrSize']) ? json_encode($input['arrSize']) : ''}}">
+                                    <input type="hidden" id="hiddenCheckBoxSize" name="size" value="{{ implode(config('setting.delimiter'), $input['arrSize']) }}">
                                 </div>
                             </div>
                             <button class="btn btn-primary">Search</button>

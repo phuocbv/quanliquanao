@@ -53,8 +53,8 @@ class ProductsController extends Controller
     {
         $input = $request->only('brand', 'category', 'gender', 'color', 'size');
         $listProductIdCategory = collect([]);
-        $listProductIdColor = collect([]);
-        $listProductIdSize = collect([]);
+        $listProductIdColor = [];
+        $listProductIdSize = [];
 
         //
         if (isset($input['category'])) {
@@ -66,25 +66,33 @@ class ProductsController extends Controller
         }
 
         //get list product id of color
+        $input['arrColor'] = [];
         if (isset($input['color']) && $input['color'] != '') {
-            $arrColorId = json_decode($input['color']);
+            $arrColorId = explode(config('setting.delimiter'), $input['color']);
             $input['arrColor'] = $arrColorId;
             $colors = $this->colorRepository->findWhereIn('id', $arrColorId)->get();
 
-            $colors->each(function ($item) use ($listProductIdColor) {
-                $listProductIdColor->push($item->productColors->pluck('product_id'));
-            });
+            foreach ($colors as $key => $value) {
+                if ($key == 0) {
+                    $listProductIdColor = $value->productColors->pluck('product_id')->all();
+                }
+                $listProductIdColor = array_intersect($listProductIdColor, $value->productColors->pluck('product_id')->all());
+            }
         }
 
         //get list product id of size
-        if (isset($input['size']) &&$input['size'] != '') {
-            $arrSizeId = json_decode($input['size']);
+        $input['arrSize'] = [];
+        if (isset($input['size']) && $input['size'] != '') {
+            $arrSizeId = explode(config('setting.delimiter'), $input['size']);
             $input['arrSize'] = $arrSizeId;
             $sizes = $this->sizeRepository->findWhereIn('id', $arrSizeId)->get();
 
-            $sizes->each(function ($item) use ($listProductIdSize) {
-                $listProductIdSize->push($item->productSizes->pluck('product_id'));
-            });
+            foreach ($sizes as $key => $value) {
+                if ($key == 0) {
+                    $listProductIdSize = $value->productSizes->pluck('product_id')->all();
+                }
+                $listProductIdSize = array_intersect($listProductIdSize, $value->productSizes->pluck('product_id')->all());
+            }
         }
 
         $brands = $this->brandRepository->all();
@@ -94,8 +102,8 @@ class ProductsController extends Controller
 
         $products = $this->productRepository->searchProduct([
             'listProductIdCategory' => $listProductIdCategory->collapse()->unique()->values()->all(),
-            'listProductIdColor' => $listProductIdColor->collapse()->unique()->values()->all(),
-            'listProductIdSize' => $listProductIdSize->collapse()->unique()->values()->all(),
+            'listProductIdColor' => $listProductIdColor,
+            'listProductIdSize' => $listProductIdSize,
             'where' => $input
         ])->get();
 

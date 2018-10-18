@@ -12,7 +12,7 @@ let Index = (function () {
                     listColor.push(parseInt($(this).val()));
                 }
             });
-            hiddenCheckBoxColor.val(JSON.stringify(listColor));
+            hiddenCheckBoxColor.val(listColor.join(DELIMITER));
         });
     };
 
@@ -24,7 +24,7 @@ let Index = (function () {
                     listSize.push(parseInt($(this).val()));
                 }
             });
-            hiddenCheckBoxSize.val(JSON.stringify(listSize));
+            hiddenCheckBoxSize.val(listSize.join(DELIMITER));
         });
     };
 
