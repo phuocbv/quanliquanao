@@ -13,7 +13,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h6>{{ trans('product_index.filter_product.title') }}</h6>
+                        <h6>Add Product</h6>
                     </div>
                     <div class="card-body">
                         <form class="row" action="{{ route('admin.products.store') }}" method="post" id="formAddProduct">

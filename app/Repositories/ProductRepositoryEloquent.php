@@ -49,15 +49,15 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 
         $result = $this->findWhere($arrCondition);
 
-        if (isset($where['category']) && $where['category'] != 0) {
+        if (isset($where['category'])) {
             $result = $result->whereIn('id', $listProductIdCategory);
         }
 
-        if (isset($where['color'])) {
+        if (isset($where['color']) && $where['color'] != '') {
             $result = $result->whereIn('id', $listProductIdColor);
         }
 
-        if (isset($where['size'])) {
+        if (isset($where['size']) && $where['size'] != '') {
             $result = $result->whereIn('id', $listProductIdSize);
         }
 
