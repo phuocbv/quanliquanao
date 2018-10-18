@@ -195,4 +195,13 @@ class ProductsController extends Controller
             return $e->getMessage();
         }
     }
+
+    public function importProduct()
+    {
+        $suppliers = $this->supplierRepository->all();
+
+        return view('admin.products.import_product', [
+            'suppliers' => $suppliers
+        ]);
+    }
 }
