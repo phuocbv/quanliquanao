@@ -13,7 +13,8 @@
         "fideloper/proxy": "^4.0",
         "laracasts/flash": "^2.0",
         "laravel/socialite": "^2.0",
-        "prettus/laravel-validation": "1.1.*"
+        "prettus/laravel-validation": "1.1.*",
+        "maatwebsite/excel": "~2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",

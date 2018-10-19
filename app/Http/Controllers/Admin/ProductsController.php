@@ -19,6 +19,7 @@ use Laraspace\Repositories\Contracts\SupplierRepositoryInterface;
 use Laraspace\Validator\SupplierValidator;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use \Prettus\Validator\Exceptions\ValidatorException;
+use Excel;
 
 class ProductsController extends Controller
 {
@@ -196,12 +197,36 @@ class ProductsController extends Controller
         }
     }
 
-    public function importProduct()
+    public function importProduct(Request $request)
     {
         $suppliers = $this->supplierRepository->all();
+        $products = null;
+
+
+        if ($request->method() == Request::METHOD_POST) {
+            $path = $request->file('import_file')->getRealPath();
+            $products = Excel::load($path, function ($reader) {
+
+            })->get();
+dd($products->toArray());
+            if ($products->count()) {
+
+            }
+
+            return back()->with([
+                'suppliers' => $suppliers,
+                'products' => $products
+            ]);
+        }
 
         return view('admin.products.import_product', [
-            'suppliers' => $suppliers
+            'suppliers' => $suppliers,
+            'products' => $products
         ]);
+    }
+
+    public function confirmImportProduct()
+    {
+
     }
 }
