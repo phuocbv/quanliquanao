@@ -15,14 +15,26 @@ use Laraspace\Models\ProductCategory;
 use Laraspace\Models\ProductColor;
 use Laraspace\Models\ProductSize;
 use Laraspace\Models\SupplierPricing;
+use Laraspace\Repositories\Contracts\ProductColorRepositoryInterface;
 use Laraspace\Repositories\Contracts\ProductRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Laraspace\Repositories\Contracts\ProductSizeRepositoryInterface;
 
 class ProductRepositoryEloquent extends BaseRepository implements ProductRepositoryInterface
 {
-    public function __construct(Product $model)
+    protected $productSizeRepository;
+    protected $productColorRepository;
+
+    public function __construct
+    (
+        Product $model,
+        ProductSizeRepositoryInterface $productSizeRepository,
+        ProductColorRepositoryInterface $productColorRepository
+    )
     {
         parent::__construct($model);
+        $this->productColorRepository = $productColorRepository;
+        $this->productSizeRepository = $productSizeRepository;
     }
 
     public function getAll()
@@ -316,5 +328,53 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function importProduct($dataImports)
+    {
+        try {
+            DB::beginTransaction();
+
+            foreach ($dataImports as $dataImport) {
+                $product = $this->createProduct($dataImport);
+
+                if (!$product) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                //process size of product
+                if (isset($dataImport['size'])) {
+                    $result = $this->productSizeRepository->insertMany($dataImport['size'], $product->id);
+
+                    if (!$result) {
+                        DB::rollBack();
+                        return false;
+                    }
+                }
+
+
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+    }
+
+    private function createProduct($input = [])
+    {
+        $product = $this->create([
+            'code' => $input['product_code'],
+            'name' => $input['product_name'],
+            'weight' => $input['weight'],
+            'gender' => $input['gender'],
+            'description' => $input['description'],
+            'supplier_id' => $input['supplier'],
+            'brand_id' => $input['brand'],
+        ]);
+
+        return $product;
     }
 }

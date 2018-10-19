@@ -209,7 +209,7 @@ class ProductsController extends Controller
 
             })->get();
 dd($products->toArray());
-            if ($products->count()) {
+            if ($products->count() > 0) {
 
             }
 
