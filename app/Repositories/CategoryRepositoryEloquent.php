@@ -22,4 +22,19 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
     {
         // TODO: Implement getAll() method.
     }
+
+    public function findOrCreate($data = [])
+    {
+        $category = $this->findWhere([
+            'name' => $data['categorisation']
+        ])->first();
+
+        if (!$category) {
+            $category = $this->create([
+                'name' => $data['categorisation']
+            ]);
+        }
+
+        return $category;
+    }
 }

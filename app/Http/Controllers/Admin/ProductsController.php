@@ -5,6 +5,7 @@
  * Date: 13/10/2018
  * Time: 12:11
  */
+
 namespace Laraspace\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ use Laraspace\Repositories\Contracts\SupplierRepositoryInterface;
 use Laraspace\Validator\SupplierValidator;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use \Prettus\Validator\Exceptions\ValidatorException;
+use Excel;
 
 class ProductsController extends Controller
 {
@@ -105,7 +107,7 @@ class ProductsController extends Controller
             'listProductIdColor' => $listProductIdColor,
             'listProductIdSize' => $listProductIdSize,
             'where' => $input
-        ])->get();
+        ])->paginate(10);;
 
         return view('admin.products.index', [
             'brands' => $brands,
@@ -189,6 +191,59 @@ class ProductsController extends Controller
 
             $this->productRepository->updateProduct($input, $input['product_id']);
             return redirect()->route('admin.products.edit', ['id' => $input['product_id']]);
+        } catch (ValidatorException $e) {
+            return $e->getMessageBag();
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function importProduct(Request $request)
+    {
+        $suppliers = $this->supplierRepository->all();
+        $products = null;
+        session()->forget(config('setting.import.session'));
+
+        if ($request->method() == Request::METHOD_POST) {
+            $validator = \Validator::make(
+                $request->only('supplier'),
+                [
+                    'supplier' => 'required'
+                ]
+            );
+
+            if ($validator->fails()) {
+                return redirect()->back()->withErrors($validator->errors())->withInput();
+            }
+
+            $path = $request->file('import_file')->getRealPath();
+            $products = Excel::load($path, function ($reader) {
+
+            })->get();
+            session([
+                config('setting.import.session') => $products
+            ]);
+
+            $products = $products->toArray();
+        }
+
+        return view('admin.products.import_product', [
+            'suppliers' => $suppliers,
+            'products' => $products
+        ]);
+    }
+
+    public function completeImportProduct(Request $request)
+    {
+        try {
+            $products = session(config('setting.import.session'));
+
+            if (count($products) > 0) {
+                $this->productRepository->importProduct($products);
+            }
+            session()->forget(config('setting.import.session'));
+
+            return redirect()->route('admin.products');
         } catch (ValidatorException $e) {
             return $e->getMessageBag();
         } catch (\Exception $e) {

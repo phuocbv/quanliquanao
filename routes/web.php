@@ -62,6 +62,21 @@ Route::group([
         'as' => 'products.updateProduct',
         'uses' => 'ProductsController@update'
     ]);
+
+    //import
+    Route::get('/importProduct', [
+        'as' => 'importProduct',
+        'uses' => 'ProductsController@importProduct'
+    ]);
+    Route::post('/importProduct', [
+        'as' => 'confirmImportProduct',
+        'uses' => 'ProductsController@importProduct'
+    ]);
+    Route::post('/completeImportProduct', [
+        'as' => 'completeImportProduct',
+        'uses' => 'ProductsController@completeImportProduct'
+    ]);
+
     Route::get('/espPricing', [
         'as' => 'espPricing',
         'uses' => 'EspPricingsController@getEspDefault'

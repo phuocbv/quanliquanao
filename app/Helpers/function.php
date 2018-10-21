@@ -56,3 +56,15 @@ function checkBoxSize($product, $sizeId) {
     }
     return false;
 }
+
+function showGender($gender = 0) {
+    $result = '';
+
+    if ($gender == config('setting.gender.male')) {
+        $result = trans('product_index.gender')[1];
+    } elseif ($gender == config('setting.gender.female')) {
+        $result = trans('product_index.gender')[2];
+    }
+
+    return $result;
+}

@@ -12,4 +12,6 @@ namespace Laraspace\Repositories\Contracts;
 interface CategoryRepositoryInterface
 {
     public function getAll();
+
+    public function findOrCreate($data = []);
 }

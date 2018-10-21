@@ -15,14 +15,50 @@ use Laraspace\Models\ProductCategory;
 use Laraspace\Models\ProductColor;
 use Laraspace\Models\ProductSize;
 use Laraspace\Models\SupplierPricing;
+use Laraspace\Repositories\Contracts\BrandRepositoryInterface;
+use Laraspace\Repositories\Contracts\CategoryRepositoryInterface;
+use Laraspace\Repositories\Contracts\EspPricingRepositoryInterface;
+use Laraspace\Repositories\Contracts\ProductCategoryRepositoryInterface;
+use Laraspace\Repositories\Contracts\ProductColorRepositoryInterface;
 use Laraspace\Repositories\Contracts\ProductRepositoryInterface;
 use Illuminate\Support\Facades\DB;
+use Laraspace\Repositories\Contracts\ProductSizeRepositoryInterface;
+use Laraspace\Repositories\Contracts\SupplierPricingRepositoryInterface;
+use Laraspace\Repositories\Contracts\SupplierRepositoryInterface;
 
 class ProductRepositoryEloquent extends BaseRepository implements ProductRepositoryInterface
 {
-    public function __construct(Product $model)
+    protected $productSizeRepository;
+    protected $productColorRepository;
+//    protected $productCategoryRepository;
+    protected $espPricingRepository;
+    protected $supplierPricingRepository;
+    protected $supplierRepository;
+    protected $brandRepository;
+    protected $categoryRepository;
+
+    public function __construct
+    (
+        Product $model,
+        ProductSizeRepositoryInterface $productSizeRepository,
+        ProductColorRepositoryInterface $productColorRepository,
+//        ProductCategoryRepositoryInterface $productCategoryRepository,
+        EspPricingRepositoryInterface $espPricingRepository,
+        SupplierPricingRepositoryInterface $supplierPricingRepository,
+        SupplierRepositoryInterface $supplierRepository,
+        BrandRepositoryInterface $brandRepository,
+        CategoryRepositoryInterface $categoryRepository
+    )
     {
         parent::__construct($model);
+        $this->productColorRepository = $productColorRepository;
+        $this->productSizeRepository = $productSizeRepository;
+//        $this->productCategoryRepository = $productCategoryRepository;
+        $this->espPricingRepository = $espPricingRepository;
+        $this->supplierPricingRepository = $supplierPricingRepository;
+        $this->supplierRepository = $supplierRepository;
+        $this->brandRepository = $brandRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function getAll()
@@ -316,5 +352,145 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function importProduct($dataImports)
+    {
+        try {
+            DB::beginTransaction();
+
+            foreach ($dataImports as $dataImport) {
+                $supplier = $this->supplierRepository->findWhere([
+                    'name' => trim($dataImport['supplier_name'])
+                ])->first();
+
+                if (!$supplier) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                $brand = $this->brandRepository->findWhere([
+                    'name' => trim($dataImport['brand_name'])
+                ])->first();
+
+                if (!$brand) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                //process create product
+                $product = $this->createProduct([
+                    'product_code' => $dataImport['product_code'],
+                    'product_name' => $dataImport['product_name'],
+                    'weight' => 0,
+                    'gender' => 0,
+                    'description' => $dataImport['product_description'],
+                    'supplier' => $supplier->id,
+                    'brand' => $brand->id
+                ]);
+
+                if (!$product) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                //process create product category
+                $category = $this->categoryRepository->findOrCreate($dataImport);
+
+                if (!$category) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                $productCategory = ProductCategory::create([
+                    'product_id' => $product->id,
+                    'category_id' => $category->id
+                ]);
+
+                if (!$productCategory) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                //process size of product
+                if (isset($dataImport['product_size'])) {
+                    $arrSize = explode('|', trim($dataImport['product_size']));
+                    $this->productSizeRepository->findOrInsertMany($arrSize, $product->id);
+                }
+
+                //process color of product
+                if (isset($dataImport['colours_available_supplier'])) {
+                    $arrColor = explode('|', trim($dataImport['colours_available_supplier']));
+                    $this->productColorRepository->findOrInsertMany($arrColor, $product->id);
+
+                }
+//
+//                //process esp_pricing
+//                if ($dataImport['esp_pricing']) {
+//                    $listEspPricing = json_decode($dataImport['esp_pricing']);
+//                    $result = $this->espPricingRepository->insertMany($listEspPricing, $product->id);
+//
+//                    if (!$result) {
+//                        DB::rollBack();
+//                        return false;
+//                    }
+//                }
+//
+                //process supplier_pricing
+                $dataSupplierPricing = [];
+
+                array_push($dataSupplierPricing, [
+                    'min' => trim($dataImport['qty_1']),
+                    'unit_price' => trim($dataImport['price_1']),
+                    'product_id' => $product->id
+                ]);
+
+                array_push($dataSupplierPricing, [
+                    'min' => trim($dataImport['qty_2']),
+                    'unit_price' => trim($dataImport['price_2']),
+                    'product_id' => $product->id
+                ]);
+
+                array_push($dataSupplierPricing, [
+                    'min' => trim($dataImport['qty_3']),
+                    'unit_price' => trim($dataImport['price_3']),
+                    'product_id' => $product->id
+                ]);
+
+                array_push($dataSupplierPricing, [
+                    'min' => trim($dataImport['qty_4']),
+                    'unit_price' => trim($dataImport['price_4']),
+                    'product_id' => $product->id
+                ]);
+
+                $result = $this->supplierPricingRepository->insertManyNotMax($dataSupplierPricing, $product->id);
+
+                if (!$result) {
+                    DB::rollBack();
+                    return false;
+                }
+
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+
+    }
+
+    private function createProduct($input = [])
+    {
+        $product = $this->create([
+            'code' => $input['product_code'],
+            'name' => $input['product_name'],
+            'weight' => $input['weight'],
+            'gender' => $input['gender'],
+            'description' => $input['description'],
+            'supplier_id' => $input['supplier'],
+            'brand_id' => $input['brand'],
+        ]);
+
+        return $product;
     }
 }

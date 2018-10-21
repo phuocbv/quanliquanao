@@ -18,4 +18,6 @@ interface ProductRepositoryInterface
     public function saveProduct($input = []);
 
     public function updateProduct($input = [], $id);
+
+    public function importProduct($dataImports);
 }
