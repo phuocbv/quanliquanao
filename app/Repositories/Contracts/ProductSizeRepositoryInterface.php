@@ -14,4 +14,6 @@ interface ProductSizeRepositoryInterface
     public function getAll();
 
     public function insertMany($data = [], $productId);
+
+    public function findOrInsertMany($data = [], $productId);
 }

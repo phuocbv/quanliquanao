@@ -23,4 +23,26 @@ class EspPricingRepositoryEloquent extends BaseRepository implements EspPricingR
     {
         // TODO: Implement getAll() method.
     }
+
+    public function insertMany($data = [], $productId)
+    {
+        $result = true;
+
+        if (count($data) > 0) {
+            $dataEspPricing = [];
+
+            foreach ($data as $value) {
+                $dataEspPricing[] = [
+                    'range' => $value->range,
+                    'percent' => $value->percent,
+                    'freight' => $value->freight,
+                    'product_id' => $productId
+                ];
+            }
+
+            $result = EspPricing::insert($dataEspPricing);
+        }
+
+        return $result;
+    }
 }

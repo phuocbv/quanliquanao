@@ -38,6 +38,22 @@ class RepositoryServiceProvider extends ServiceProvider
         [
             \Laraspace\Repositories\Contracts\EspPricingDefaultRepositoryInterface::class,
             \Laraspace\Repositories\EspPricingDefaultRepositoryEloquent::class
+        ],
+        [
+            \Laraspace\Repositories\Contracts\SupplierPricingRepositoryInterface::class,
+            \Laraspace\Repositories\SupplierPricingRepositoryEloquent::class
+        ],
+        [
+            \Laraspace\Repositories\Contracts\ProductSizeRepositoryInterface::class,
+            \Laraspace\Repositories\ProductSizeRepositoryEloquent::class
+        ],
+        [
+            \Laraspace\Repositories\Contracts\ProductColorRepositoryInterface::class,
+            \Laraspace\Repositories\ProductColorRepositoryEloquent::class
+        ],
+        [
+            \Laraspace\Repositories\Contracts\EspPricingRepositoryInterface::class,
+            \Laraspace\Repositories\EspPricingRepositoryEloquent::class
         ]
     ];
 

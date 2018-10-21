@@ -9,6 +9,7 @@
 namespace Laraspace\Repositories;
 
 use Laraspace\Models\ProductSize;
+use Laraspace\Models\Size;
 use Laraspace\Repositories\Contracts\ProductSizeRepositoryInterface;
 
 class ProductSizeRepositoryEloquent extends BaseRepository implements ProductSizeRepositoryInterface
@@ -32,7 +33,8 @@ class ProductSizeRepositoryEloquent extends BaseRepository implements ProductSiz
      */
     public function insertMany($data = [], $productId)
     {
-        $result = null;
+        $result = true;
+
         if (count($data) > 0) {
             $dataSize = [];
 
@@ -41,6 +43,33 @@ class ProductSizeRepositoryEloquent extends BaseRepository implements ProductSiz
                     'product_id' => $productId,
                     'size_id' => $value
                 ];
+            }
+
+            $result = ProductSize::insert($dataSize);
+        }
+        return $result;
+    }
+
+    public function findOrInsertMany($data = [], $productId)
+    {
+        $result = true;
+
+        if (count($data) > 0) {
+            $dataSize = [];
+
+            foreach ($data as $value) {
+                if (!trim($value)) continue;
+
+                $size = Size::where([
+                    'size' => $value
+                ])->first();
+
+                if ($size) {
+                    $dataSize[] = [
+                        'product_id' => $productId,
+                        'size_id' => $size->id
+                    ];
+                }
             }
 
             $result = ProductSize::insert($dataSize);

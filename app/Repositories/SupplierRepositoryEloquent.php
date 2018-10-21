@@ -22,6 +22,4 @@ class SupplierRepositoryEloquent extends BaseRepository implements SupplierRepos
     {
         // TODO: Implement getAll() method.
     }
-
-
 }

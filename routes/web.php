@@ -72,6 +72,10 @@ Route::group([
         'as' => 'confirmImportProduct',
         'uses' => 'ProductsController@importProduct'
     ]);
+    Route::post('/completeImportProduct', [
+        'as' => 'completeImportProduct',
+        'uses' => 'ProductsController@completeImportProduct'
+    ]);
 
     Route::get('/espPricing', [
         'as' => 'espPricing',

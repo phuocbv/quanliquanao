@@ -8,6 +8,7 @@
 
 namespace Laraspace\Repositories;
 
+use Laraspace\Models\Color;
 use Laraspace\Models\ProductColor;
 use Laraspace\Repositories\Contracts\ProductColorRepositoryInterface;
 
@@ -25,7 +26,7 @@ class ProductColorRepositoryEloquent extends BaseRepository implements ProductCo
 
     public function insertMany($data = [], $productId)
     {
-        $result = null;
+        $result = true;
 
         if (count($data) > 0) {
             $dataColor = [];
@@ -35,6 +36,32 @@ class ProductColorRepositoryEloquent extends BaseRepository implements ProductCo
                     'product_id' => $productId,
                     'color_id' => $value
                 ];
+            }
+
+            $result = ProductColor::insert($dataColor);
+        }
+
+        return $result;
+    }
+
+    public function findOrInsertMany($data = [], $productId)
+    {
+        $result = true;
+
+        if (count($data) > 0) {
+            $dataColor = [];
+
+            foreach ($data as $value) {
+                $color = Color::where([
+                    'name' => $value
+                ])->first();
+
+                if ($color) {
+                    $dataColor[] = [
+                        'product_id' => $productId,
+                        'color_id' => $color->id
+                    ];
+                }
             }
 
             $result = ProductColor::insert($dataColor);

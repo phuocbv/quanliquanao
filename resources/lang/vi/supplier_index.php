@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'title' => 'Danh sách nhà cung cấp',
-    'button_add' => 'Thêm',
-    'button_edit' => 'Sửa',
+    'title' => 'Supplier List',
+    'button_add' => 'Add',
+    'button_edit' => 'Edit',
     'table' => [
         'id' => 'ID',
-        'name' => 'Tên nhà cung cấp'
+        'name' => 'Supplier'
     ],
 
     'modal' => [

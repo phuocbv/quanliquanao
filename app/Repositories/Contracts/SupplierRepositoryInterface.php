@@ -12,4 +12,6 @@ namespace Laraspace\Repositories\Contracts;
 interface SupplierRepositoryInterface
 {
     public function getAll();
+
+    //public function insertMany($input = [], $productId);
 }

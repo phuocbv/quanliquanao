@@ -89,8 +89,11 @@
                                 <h6>Danh sách sản phẩm</h6>
                             </div>
                             <div class="col-sm-6" align="right" style="padding-right: 50px">
-                                <a href="{{ route('admin.products.add') }}" class="btn btn-primary">
+                                <a href="{{ route('admin.products.add') }}" class="btn btn-success">
                                     {{ trans('supplier_index.button_add') }}
+                                </a>
+                                <a href="{{ route('admin.importProduct') }}" class="btn btn-success">
+                                    Import
                                 </a>
                             </div>
                         </div>
@@ -119,7 +122,7 @@
                                         <td>{{ $product->name }}</td>
                                         <td>{{ $product->weight }}</td>
                                         <td>{{ convertArrayObjectToString($product->colors) }}</td>
-                                        <td>{{ trans('product_index.gender')[$product->gender] }}</td>
+                                        <td>{{ showGender($product->gender) }}</td>
                                         <td>{{ convertArrayObjectToString($product->sizes, 'size') }}</td>
                                         <td>
                                             <a href="{{ route('admin.products.edit', ['id' => $product->id]) }}">
@@ -130,6 +133,14 @@
                                 @endforeach
                             </tbody>
                         </table>
+                        {{ $products->appends([
+                            'brand' => isset($input['brand']) ?  $input['brand'] : '',
+                            'category' => isset($input['category']) ?  $input['category'] : '',
+                            'gender' => isset($input['gender']) ? $input['gender'] : '',
+                            'color' => implode(config('setting.delimiter'), $input['arrColor']),
+                            'size' => implode(config('setting.delimiter'), $input['arrSize'])
+                            ])->links()
+                        }}
                     </div>
                 </div>
             </div>

@@ -9,9 +9,7 @@
 namespace Laraspace\Repositories\Contracts;
 
 
-interface EspPricingRepositoryInterface
+interface ImportProductRepositoryInterface
 {
     public function getAll();
-
-    public function insertMany($data = [], $productId);
 }
