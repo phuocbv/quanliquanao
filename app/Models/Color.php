@@ -5,7 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Color extends Model
 {
-    protected $table = 'colors';
+//    protected $table = 'colors';
+    protected $table = 'esp_colors';
 
     protected $fillable = [
         'name',

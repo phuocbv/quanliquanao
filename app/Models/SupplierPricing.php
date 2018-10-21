@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SupplierPricing extends Model
 {
-    protected $table = 'supplier_pricings';
+    protected $table = 'esp_supplier_pricings';
 
     protected $fillable = [
         'min',

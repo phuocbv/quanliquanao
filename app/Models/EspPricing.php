@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class EspPricing extends Model
 {
-    protected $table = 'esp_pricings';
+    protected $table = 'esp_esp_pricings';
 
     protected $fillable = [
         'range',

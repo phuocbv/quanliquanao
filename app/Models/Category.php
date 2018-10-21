@@ -5,7 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-    protected $table = 'categories';
+//    protected $table = 'categories';
+    protected $table = 'esp_categories';
 
     protected $fillable = [
         'name'

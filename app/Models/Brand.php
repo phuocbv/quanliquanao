@@ -5,7 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Brand extends Model
 {
-    protected $table = 'brands';
+//    protected $table = 'brands';
+    protected $table = 'esp_brands';
 
     protected $fillable = [
         'name'
