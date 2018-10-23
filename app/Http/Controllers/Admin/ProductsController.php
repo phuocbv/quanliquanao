@@ -220,26 +220,75 @@ class ProductsController extends Controller
             $products = Excel::load($path, function ($reader) {
 
             })->get();
-            session([
-                config('setting.import.session') => $products
-            ]);
+
+            //check data
+           // $supplier = $this->supplierRepository->find( $request->only('supplier')['supplier']);
+
+//            if (!$supplier) {
+//                //process error
+//            }
+//
+//            $fields = $supplier->fields->pluck('name');
+
+            $check = true;
+
+            foreach ($products as $product) {
+                if (empty(trim($product['supplier_name']))) {
+                    $check = false;
+                    break;
+                }
+
+                if (empty(trim($product['brand_name']))) {
+                    $check = false;
+                    break;
+                }
+
+                if (empty(trim($product['product_code']))) {
+                    $check = false;
+                    break;
+                }
+
+                if (empty(trim($product['product_name']))) {
+                    $check = false;
+                    break;
+                }
+
+                if (empty(trim($product['product_description']))) {
+                    $check = false;
+                    break;
+                }
+
+                if (empty(trim($product['categorisation']))) {
+                    $check = false;
+                    break;
+                }
+            }
+
+            if ($check) {
+                session([
+                    config('setting.import.session') => [
+                        'product' => $products,
+                        'supplier' => $request->only('supplier')['supplier']
+                    ]
+                ]);
+            }
 
             $products = $products->toArray();
         }
 
         return view('admin.products.import_product', [
             'suppliers' => $suppliers,
-            'products' => $products
+            'products' => $products,
         ]);
     }
 
     public function completeImportProduct(Request $request)
     {
         try {
-            $products = session(config('setting.import.session'));
+            $import = session(config('setting.import.session'));
 
-            if (count($products) > 0) {
-                $this->productRepository->importProduct($products);
+            if (count($import['product']) > 0) {
+                $this->productRepository->importProduct($import['product'], $import['supplier']);
             }
             session()->forget(config('setting.import.session'));
 

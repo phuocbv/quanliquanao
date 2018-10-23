@@ -10,4 +10,9 @@ class Supplier extends Model
     protected $fillable = [
         'name'
     ];
+
+    public function fields()
+    {
+        return $this->belongsToMany(Field::class, 'esp_supplier_fields', 'supplier_id', 'field_id');
+    }
 }

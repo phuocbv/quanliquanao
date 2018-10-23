@@ -54,6 +54,10 @@ class RepositoryServiceProvider extends ServiceProvider
         [
             \Laraspace\Repositories\Contracts\EspPricingRepositoryInterface::class,
             \Laraspace\Repositories\EspPricingRepositoryEloquent::class
+        ],
+        [
+            \Laraspace\Repositories\Contracts\AttributeValueRepositoryInterface::class,
+            \Laraspace\Repositories\AttributeValueRepositoryEloquent::class
         ]
     ];
 
