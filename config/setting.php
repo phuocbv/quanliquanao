@@ -14,5 +14,13 @@ return [
 
     'import' => [
         'session' => 'IMPORT_SESSION'
+    ],
+    'field_require' => [
+        'supplier_name',
+        'brand_name',
+        'product_code',
+        'product_name',
+        'product_description',
+        'categorisation'
     ]
 ];

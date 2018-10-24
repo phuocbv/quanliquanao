@@ -8,7 +8,6 @@
 
 namespace Laraspace\Repositories;
 
-use Laraspace\Models\Brand;
 use Laraspace\Models\EspPricing;
 use Laraspace\Models\Product;
 use Laraspace\Models\ProductCategory;
@@ -425,12 +424,28 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                     return false;
                 }
 
+                $gender = 0;
+                if ($fields->contains('gender') && !empty(trim($dataImport['gender']))) {
+                    if (trim($dataImport['gender']) == 'Male') {
+                        $gender = config('setting.gender.male');
+                    } elseif (trim($dataImport['gender']) == 'Female') {
+                        $gender = config('setting.gender.female');
+                    }
+                    $arrField->push('gender');
+                }
+
+                $weight = 0;
+                if ($fields->contains('weight') && !empty(trim($dataImport['weight']))) {
+                    $weight = trim($dataImport['weight']);
+                    $arrField->push('weight');
+                }
+
                 //process create product
                 $product = $this->createProduct([
                     'product_code' => trim($dataImport['product_code']),
                     'product_name' => trim($dataImport['product_name']),
-                    'weight' => 0,
-                    'gender' => 0,
+                    'weight' => $weight,
+                    'gender' => $gender,
                     'description' => trim($dataImport['product_description']),
                     'supplier' => $supplier->id,
                     'brand' => $brand->id
@@ -469,14 +484,14 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                 }
 
                 //process size of product
-                if (isset($dataImport['product_size'])) {
+                if (isset($dataImport['product_size']) && $fields->contains('product_size')) {
                     $arrSize = explode('|', trim($dataImport['product_size']));
                     $this->productSizeRepository->findOrInsertMany($arrSize, $product->id);
                     $arrField->push('product_size');
                 }
 
                 //process color of product
-                if (isset($dataImport['colours_available_supplier'])) {
+                if (isset($dataImport['colours_available_supplier']) && $fields->contains('colours_available_supplier')) {
                     $arrColor = explode('|', trim($dataImport['colours_available_supplier']));
                     $this->productColorRepository->findOrInsertMany($arrColor, $product->id);
                     $arrField->push('colours_available_supplier');
@@ -492,12 +507,13 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 //                        return false;
 //                    }
 //                }
-//
+
                 //process supplier_pricing
                 $dataSupplierPricing = [];
 
                 $index = 1;
-                
+                $check = false;
+
                 while(true) {
                     if ($fields->contains('qty_' . $index) && $fields->contains('price_' . $index)) {
                         array_push($dataSupplierPricing, [
@@ -507,40 +523,19 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                         ]);
                         $arrField->push('qty_' . $index)->push('price_' . $index);
                         $index++;
+                        $check = true;
                     } else {
                         break;
                     }
                 }
                 
-//                array_push($dataSupplierPricing, [
-//                    'min' => trim($dataImport['qty_1']),
-//                    'unit_price' => trim($dataImport['price_1']),
-//                    'product_id' => $product->id
-//                ]);
-//
-//                array_push($dataSupplierPricing, [
-//                    'min' => trim($dataImport['qty_2']),
-//                    'unit_price' => trim($dataImport['price_2']),
-//                    'product_id' => $product->id
-//                ]);
-//
-//                array_push($dataSupplierPricing, [
-//                    'min' => trim($dataImport['qty_3']),
-//                    'unit_price' => trim($dataImport['price_3']),
-//                    'product_id' => $product->id
-//                ]);
-//
-//                array_push($dataSupplierPricing, [
-//                    'min' => trim($dataImport['qty_4']),
-//                    'unit_price' => trim($dataImport['price_4']),
-//                    'product_id' => $product->id
-//                ]);
+                if ($check) {
+                    $result = $this->supplierPricingRepository->insertManyNotMax($dataSupplierPricing, $product->id);
 
-                $result = $this->supplierPricingRepository->insertManyNotMax($dataSupplierPricing, $product->id);
-
-                if (!$result) {
-                    DB::rollBack();
-                    return false;
+                    if (!$result) {
+                        DB::rollBack();
+                        return false;
+                    }
                 }
 
                 $dataImport = $dataImport->except($arrField->toArray());

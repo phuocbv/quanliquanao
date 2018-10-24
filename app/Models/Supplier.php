@@ -15,4 +15,9 @@ class Supplier extends Model
     {
         return $this->belongsToMany(Field::class, 'esp_supplier_fields', 'supplier_id', 'field_id');
     }
+
+    public function supplierFields()
+    {
+        return $this->hasMany(SupplierField::class, 'supplier_id');
+    }
 }

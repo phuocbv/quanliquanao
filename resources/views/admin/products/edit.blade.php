@@ -70,10 +70,10 @@
                                             <input class="form-check-input" type="radio" name="gender" value="{{ config('setting.gender.male') }}"
                                                    {{ $product->gender == config('setting.gender.male') ? 'checked' : '' }}>
                                             <label class="form-check-label" for="checkMale">Male</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
+                                        {{--</div>--}}
+                                        {{--<div class="form-check form-check-inline">--}}
                                             <input class="form-check-input" type="radio" name="gender" value="{{ config('setting.gender.female') }}"
-                                                    {{ $product->gender == config('setting.gender.female') ? 'checked' : '' }}>
+                                                    {{ $product->gender == config('setting.gender.female') ? 'checked' : '' }} style="margin-left: 20px">
                                             <label class="form-check-label" for="checkFemale">Female</label>
                                         </div>
                                     </div>

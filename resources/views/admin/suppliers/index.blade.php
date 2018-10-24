@@ -18,9 +18,9 @@
                                 <h6>{{ trans('supplier_index.title') }}</h6>
                             </div>
                             <div class="col-sm-6" align="right" style="padding-right: 50px">
-                                <button class="btn btn-info" id="btnShowModalAddSupplier">
+                                <a href="{{ route('admin.suppliers.add') }}" class="btn btn-success">
                                     {{ trans('supplier_index.button_add') }}
-                                </button>
+                                </a>
                             </div>
                         </div>
                     </div>
