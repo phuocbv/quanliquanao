@@ -190,7 +190,7 @@ let Edit = (function () {
     };
 
     let handleValidate = function () {
-        let form = $('#formAddProduct')
+        let form = $('#formEditProduct')
         form.validate({
             errorElement: 'span', // default input error message container
             errorClass: 'help-block help-block-error', // default input error message class

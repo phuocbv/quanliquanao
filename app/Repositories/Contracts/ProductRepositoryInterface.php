@@ -19,5 +19,5 @@ interface ProductRepositoryInterface
 
     public function updateProduct($input = [], $id);
 
-    public function importProduct($dataImports);
+    public function importProduct($dataImports, $supplier);
 }

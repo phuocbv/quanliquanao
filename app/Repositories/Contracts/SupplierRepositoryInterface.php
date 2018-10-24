@@ -14,4 +14,7 @@ interface SupplierRepositoryInterface
     public function getAll();
 
     //public function insertMany($input = [], $productId);
+    public function createSupplier($data);
+
+    public function updateSupplier($data, $supplierId);
 }

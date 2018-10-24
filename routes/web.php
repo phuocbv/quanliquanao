@@ -34,11 +34,19 @@ Route::group([
         'as' => 'suppliers.store',
         'uses' => 'SuppliersController@store'
     ]);
+    Route::get('/suppliers/add', [
+        'as' => 'suppliers.add',
+        'uses' => 'SuppliersController@create'
+    ]);
+    Route::get('/suppliers/{id}/edit', [
+        'as' => 'suppliers.edit',
+        'uses' => 'SuppliersController@edit'
+    ]);
     Route::get('/getSupplier', [
         'as' => 'suppliers.getSupplier',
         'uses' => 'SuppliersController@getSupplier'
     ]);
-    Route::put('/updateSupplier', [
+    Route::post('/updateSupplier', [
         'as' => 'suppliers.updateSupplier',
         'uses' => 'SuppliersController@updateSupplier'
     ]);

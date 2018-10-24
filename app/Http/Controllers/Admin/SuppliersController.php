@@ -39,19 +39,43 @@ class SuppliersController extends Controller
 
     public function store(Request $request)
     {
-        $input = $request->only('name');
+        $input = $request->only('name', 'field');
+
         try {
-            $this->supplierValidator->with($input)->passesOrFail( ValidatorInterface::RULE_CREATE);
-            $supplier = $this->supplierRepository->create($input);
-            return $this->response(true, $supplier);
+            //validate
+            //$this->supplierValidator->with($input)->passesOrFail( ValidatorInterface::RULE_CREATE);
+
+            $this->supplierRepository->createSupplier($input);
+            //$supplier = $this->supplierRepository->create($input);
+            return redirect()->route('admin.suppliers');
         } catch (ValidatorException $e) {
-            return $this->response(false, null, $e->getMessageBag()->all());
+            return $e->getMessageBag()->all();
         }
+    }
+
+    public function create()
+    {
+        $fieldRequire = config('setting.field_require');
+
+        return view('admin.suppliers.add', [
+            'fieldRequire' => $fieldRequire
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $supplier = $this->supplierRepository->find($id);
+        $fieldRequire = config('setting.field_require');
+
+        return view('admin.suppliers.edit', [
+            'supplier' => $supplier,
+            'fieldRequire' => $fieldRequire
+        ]);
     }
 
     public function getSupplier(Request $request)
     {
-        $input = $request->only('id');
+        $input = $request->only('name', 'field');
         $supplier = $this->supplierRepository->find($input['id']);
 
         if (!$supplier) {
@@ -72,14 +96,18 @@ class SuppliersController extends Controller
      */
     public function updateSupplier(Request $request)
     {
-        $input = $request->only('id', 'name');
+        $input = $request->only('id', 'name', 'field');
+
         try {
-            $this->supplierValidator->setId($input['id'])
-                ->with($input)->passesOrFail( ValidatorInterface::RULE_UPDATE);
-            $supplier = $this->supplierRepository->update($input, $input['id']);
-            return $this->response(true, $supplier);
+            //validate
+//            $this->supplierValidator->setId($input['id'])
+//                ->with($input)->passesOrFail( ValidatorInterface::RULE_UPDATE);
+
+            $this->supplierRepository->updateSupplier($input, $input['id']);
+
+            return redirect()->route('admin.suppliers.edit', ['id' => $input['id']]);
         } catch (ValidatorException $e) {
-            return $this->response(false, null, $e->getMessageBag()->all());
+            return $e->getMessageBag()->all();
         }
     }
 }

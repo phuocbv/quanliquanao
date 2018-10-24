@@ -8,13 +8,13 @@
 
 namespace Laraspace\Repositories;
 
-use Laraspace\Models\Brand;
 use Laraspace\Models\EspPricing;
 use Laraspace\Models\Product;
 use Laraspace\Models\ProductCategory;
 use Laraspace\Models\ProductColor;
 use Laraspace\Models\ProductSize;
 use Laraspace\Models\SupplierPricing;
+use Laraspace\Repositories\Contracts\AttributeValueRepositoryInterface;
 use Laraspace\Repositories\Contracts\BrandRepositoryInterface;
 use Laraspace\Repositories\Contracts\CategoryRepositoryInterface;
 use Laraspace\Repositories\Contracts\EspPricingRepositoryInterface;
@@ -36,6 +36,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
     protected $supplierRepository;
     protected $brandRepository;
     protected $categoryRepository;
+    protected $attributeValueRepository;
 
     public function __construct
     (
@@ -47,7 +48,8 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         SupplierPricingRepositoryInterface $supplierPricingRepository,
         SupplierRepositoryInterface $supplierRepository,
         BrandRepositoryInterface $brandRepository,
-        CategoryRepositoryInterface $categoryRepository
+        CategoryRepositoryInterface $categoryRepository,
+        AttributeValueRepositoryInterface $attributeValueRepository
     )
     {
         parent::__construct($model);
@@ -59,6 +61,7 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         $this->supplierRepository = $supplierRepository;
         $this->brandRepository = $brandRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->attributeValueRepository = $attributeValueRepository;
     }
 
     public function getAll()
@@ -354,17 +357,49 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
         }
     }
 
-    public function importProduct($dataImports)
+    public function importProduct($dataImports, $supplier)
     {
         try {
             DB::beginTransaction();
 
+            $supplier = $this->supplierRepository->find($supplier);
+
+            if (!$supplier) {
+                DB::rollBack();
+                return false;
+            }
+
+            $fields = $supplier->fields;
+
+            if (count($fields) < 1) {
+                DB::rollBack();
+                return false;
+            }
+
+            $fields = $fields->pluck('name');
+
             foreach ($dataImports as $dataImport) {
+
+                $arrField = collect([]);
+
+                if (!$fields->contains('supplier_name') || empty(trim($dataImport['supplier_name']))) {
+                    DB::rollBack();
+                    return false;
+                }
+
                 $supplier = $this->supplierRepository->findWhere([
                     'name' => trim($dataImport['supplier_name'])
                 ])->first();
 
                 if (!$supplier) {
+                    DB::rollBack();
+                    return false;
+                }
+                //add in array used
+                $arrField->push('supplier_name');
+
+                //check exist field brand_name
+                if (!$fields->contains('brand_name') || empty(trim($dataImport['brand_name']))) {
                     DB::rollBack();
                     return false;
                 }
@@ -377,14 +412,41 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                     DB::rollBack();
                     return false;
                 }
+                //add in array used
+                $arrField->push('brand_name');
+
+                //check exist field
+                if ((!$fields->contains('product_code') || empty(trim($dataImport['product_code'])))
+                    && (!$fields->contains('product_name') || empty(trim($dataImport['product_name'])))
+                    && (!$fields->contains('product_description') || empty(trim($dataImport['product_description'])))
+                ) {
+                    DB::rollBack();
+                    return false;
+                }
+
+                $gender = 0;
+                if ($fields->contains('gender') && !empty(trim($dataImport['gender']))) {
+                    if (trim($dataImport['gender']) == 'Male') {
+                        $gender = config('setting.gender.male');
+                    } elseif (trim($dataImport['gender']) == 'Female') {
+                        $gender = config('setting.gender.female');
+                    }
+                    $arrField->push('gender');
+                }
+
+                $weight = 0;
+                if ($fields->contains('weight') && !empty(trim($dataImport['weight']))) {
+                    $weight = trim($dataImport['weight']);
+                    $arrField->push('weight');
+                }
 
                 //process create product
                 $product = $this->createProduct([
-                    'product_code' => $dataImport['product_code'],
-                    'product_name' => $dataImport['product_name'],
-                    'weight' => 0,
-                    'gender' => 0,
-                    'description' => $dataImport['product_description'],
+                    'product_code' => trim($dataImport['product_code']),
+                    'product_name' => trim($dataImport['product_name']),
+                    'weight' => $weight,
+                    'gender' => $gender,
+                    'description' => trim($dataImport['product_description']),
                     'supplier' => $supplier->id,
                     'brand' => $brand->id
                 ]);
@@ -393,14 +455,23 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                     DB::rollBack();
                     return false;
                 }
+                //add in array used
+                $arrField->push('product_code')->push('product_name')->push('product_description');
 
                 //process create product category
+                if (!$fields->contains('categorisation') || empty(trim($dataImport['categorisation']))) {
+                    DB::rollBack();
+                    return false;
+                }
+
                 $category = $this->categoryRepository->findOrCreate($dataImport);
 
                 if (!$category) {
                     DB::rollBack();
                     return false;
                 }
+                //add in array used
+                $arrField->push('categorisation');
 
                 $productCategory = ProductCategory::create([
                     'product_id' => $product->id,
@@ -413,16 +484,17 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
                 }
 
                 //process size of product
-                if (isset($dataImport['product_size'])) {
+                if (isset($dataImport['product_size']) && $fields->contains('product_size')) {
                     $arrSize = explode('|', trim($dataImport['product_size']));
                     $this->productSizeRepository->findOrInsertMany($arrSize, $product->id);
+                    $arrField->push('product_size');
                 }
 
                 //process color of product
-                if (isset($dataImport['colours_available_supplier'])) {
+                if (isset($dataImport['colours_available_supplier']) && $fields->contains('colours_available_supplier')) {
                     $arrColor = explode('|', trim($dataImport['colours_available_supplier']));
                     $this->productColorRepository->findOrInsertMany($arrColor, $product->id);
-
+                    $arrField->push('colours_available_supplier');
                 }
 //
 //                //process esp_pricing
@@ -435,41 +507,40 @@ class ProductRepositoryEloquent extends BaseRepository implements ProductReposit
 //                        return false;
 //                    }
 //                }
-//
+
                 //process supplier_pricing
                 $dataSupplierPricing = [];
 
-                array_push($dataSupplierPricing, [
-                    'min' => trim($dataImport['qty_1']),
-                    'unit_price' => trim($dataImport['price_1']),
-                    'product_id' => $product->id
-                ]);
+                $index = 1;
+                $check = false;
 
-                array_push($dataSupplierPricing, [
-                    'min' => trim($dataImport['qty_2']),
-                    'unit_price' => trim($dataImport['price_2']),
-                    'product_id' => $product->id
-                ]);
+                while(true) {
+                    if ($fields->contains('qty_' . $index) && $fields->contains('price_' . $index)) {
+                        array_push($dataSupplierPricing, [
+                            'min' => trim($dataImport['qty_' . $index]),
+                            'unit_price' => trim($dataImport['price_' . $index]),
+                            'product_id' => $product->id
+                        ]);
+                        $arrField->push('qty_' . $index)->push('price_' . $index);
+                        $index++;
+                        $check = true;
+                    } else {
+                        break;
+                    }
+                }
+                
+                if ($check) {
+                    $result = $this->supplierPricingRepository->insertManyNotMax($dataSupplierPricing, $product->id);
 
-                array_push($dataSupplierPricing, [
-                    'min' => trim($dataImport['qty_3']),
-                    'unit_price' => trim($dataImport['price_3']),
-                    'product_id' => $product->id
-                ]);
-
-                array_push($dataSupplierPricing, [
-                    'min' => trim($dataImport['qty_4']),
-                    'unit_price' => trim($dataImport['price_4']),
-                    'product_id' => $product->id
-                ]);
-
-                $result = $this->supplierPricingRepository->insertManyNotMax($dataSupplierPricing, $product->id);
-
-                if (!$result) {
-                    DB::rollBack();
-                    return false;
+                    if (!$result) {
+                        DB::rollBack();
+                        return false;
+                    }
                 }
 
+                $dataImport = $dataImport->except($arrField->toArray());
+
+                $this->attributeValueRepository->insertListAttribute($dataImport, $fields, $product->id);
             }
             DB::commit();
         } catch (\Exception $e) {

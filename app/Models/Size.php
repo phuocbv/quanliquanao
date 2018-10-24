@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Size extends Model
 {
-    protected $table = 'sizes';
+    protected $table = 'esp_sizes';
 
     protected $fillable = [
         'size'

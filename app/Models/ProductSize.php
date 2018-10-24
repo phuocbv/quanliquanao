@@ -5,7 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductSize extends Model
 {
-    protected $table = 'product_sizes';
+//    protected $table = 'product_sizes';
+    protected $table = 'esp_product_sizes';
 
     protected $fillable = [
         'product_id',

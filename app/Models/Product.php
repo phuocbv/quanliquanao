@@ -5,7 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    protected $table = 'products';
+//    protected $table = 'products';
+    protected $table = 'esp_products';
 
     protected $fillable = [
         'code',
@@ -30,22 +31,22 @@ class Product extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(Category::class, 'product_categories', 'product_id', 'category_id');
+        return $this->belongsToMany(Category::class, 'esp_product_categories', 'product_id', 'category_id');
     }
 
     public function colors()
     {
-        return $this->belongsToMany(Color::class, 'product_colors', 'product_id', 'color_id');
+        return $this->belongsToMany(Color::class, 'esp_product_colors', 'product_id', 'color_id');
     }
 
     public function sizes()
     {
-        return $this->belongsToMany(Size::class, 'product_sizes', 'product_id', 'size_id');
+        return $this->belongsToMany(Size::class, 'esp_product_sizes', 'product_id', 'size_id');
     }
 
     public function images()
     {
-        return $this->belongsToMany(Image::class, 'product_images', 'product_id', 'image_id');
+        return $this->belongsToMany(Image::class, 'esp_product_images', 'product_id', 'image_id');
     }
 
     public function espPricings()
